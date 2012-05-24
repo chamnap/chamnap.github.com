@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Unit Test or Integration Test? - Chamnap Chhorn</title>
+  <meta name="author" content="Chamnap Chhorn">
+
+  
+  <meta name="description" content="I were often asked when to do unit test or integration test, so I decided to write this blog post to clarify: Unit Test By definition it doesn&#8217; &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Chamnap Chhorn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31866777-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Chamnap Chhorn</a></h1>
+  
+    <h2>JavaScript and Ruby Developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:chamnap.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Unit Test or Integration Test?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T00:39:00+07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I were often asked when to do unit test or integration test, so I decided to write this blog post to clarify:</p>
+
+<h2>Unit Test</h2>
+
+<ul>
+<li><p>By definition</p>
+
+<ul>
+<li>it doesn&#8217;t talk to database</li>
+<li>it doesn&#8217;t communicate across the network</li>
+<li>it doesn&#8217;t touch the file system</li>
+</ul>
+</li>
+<li>Test a single module in isolation. We often use <code>stub</code> or <code>mock</code> its dependencies. When its tests fail, we know exactly because of itself.</li>
+<li>A <code>stub</code> object is a <code>fake object</code> and not part of the test. It can be replaced by any other objects.</li>
+<li>A <code>mock</code> object is also a <code>fake object</code>. A <code>mock</code> object contains behavior and it is part of what we want to test (collaborator).</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="no">Statement</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;logs a message on generate()&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">customer</span> <span class="o">=</span> <span class="n">stub</span><span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">customer</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;Aslak&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">logger</span>   <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">statement</span> <span class="o">=</span> <span class="no">Statement</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">logger</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:log</span><span class="p">)</span><span class="o">.</span><span class="n">with</span><span class="p">(</span><span class="sr">/Statement generated for Aslak/</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">statement</span><span class="o">.</span><span class="n">generate</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The above test would fail if the <code>logger</code> doesn&#8217;t call <code>#log</code> with the specified parameter. customer is simply a fake object with no behavior in the test, and it cannot make the test fail. Remember this test is about the logging a message.</li>
+<li>Kind of <code>White-box testing</code>. It tests internal workings of an application. You dictate the software that it should do this and do that.</li>
+<li>Generally, <code>private methods</code> are already tested indirectly by public methods. You should not test it explicitly. However, if you feel that private method is crucious to make your class work correctly, consider give it a better name and promote it as public method.</li>
+<li>Unit tests alone are not enough to make sure the application work correctly.</li>
+<li>Much faster than integration test.</li>
+<li>In Rails, there are functional tests: <code>model spec</code>, <code>controller spec</code> (it touches database).</li>
+</ul>
+
+
+<h2>Integration Test</h2>
+
+<ul>
+<li>It tests interaction between components to make sure these components work nicely with each other.</li>
+<li>Kind of <code>Acceptance Testing</code>, it focuses on what the user see and how the user interacts with the system. It can be called <code>Black-box testing</code> where we don&#8217;t care how it is done. We care only the outcome.</li>
+<li>Much slower than unit test.</li>
+<li>In Rails, it would be request spec and capybara.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;POST /tasks&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;creates task&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">tasks_path</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="s2">&quot;washing clothes&quot;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s2">&quot;Add&quot;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">&quot;Successfully added task.&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">&quot;washing clothes&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The above test send the actual request to <code>/tasks</code>, fill out the form, and submit. It expects the content we filled out to be display in the page. If it&#8217;s a unit test (in this case, functional test aka. controller spec), we would test it differently. We won&#8217;t send the actual request, and we would assert it should receive <code>#save</code> on a <code>@task</code> object.</li>
+<li>It&#8217;s better than unit test because it mimics real user behaviors and it tests the entire stack of the application.</li>
+<li>Should we still write controller spec? The answer is <code>yes</code> for sad path and leave the happy path in the integration tests. Doing this make your tests a bit faster. <a href="http://solnic.eu/2012/02/02/yes-you-should-write-controller-tests.html">Check this blog</a></li>
+</ul>
+
+
+<h2>Where to get started?</h2>
+
+<ul>
+<li>Should we write unit test first or integration test first? If you haven&#8217;t watched <a href="http://railscasts.com/episodes/275-how-i-test">this episode</a> from <code>RailsCasts</code>, watch it. He followed the outside-in development, starting from request spec, controller spec, and model spec.</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Chamnap Chhorn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T00:39:00+07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/rspec/'>rspec</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/" title="Previous Post: Remove focus options on your spec examples">&laquo; Remove focus options on your spec examples</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/19/how-useful-is-monit/">How useful is monit?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/chamnap">@chamnap</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'chamnap',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("chamnap", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/chamnap" class="twitter-follow-button" data-show-count="false">Follow @chamnap</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Chamnap Chhorn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'chamnap';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/';
+        var disqus_url = 'http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

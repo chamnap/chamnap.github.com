@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-05-24T23:29:13+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[How useful is monit?]]></title>
+    <link href="http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/"/>
+    <updated>2011-10-19T16:09:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit</id>
+    <content type="html"><![CDATA[<p>From here assuming that you know what monit is, but if you don’t, just go to see <a href="http://mmonit.com/monit/">Monit</a>. It’s basically a monitoring utility in unix system. You could monitor almost anything in your server. It’ll automatically restart the service if it stops and send you an email.</p>
+
+<p>Generally, some people don't like it very much because it send too many emails when your server is in trouble, and those emails are annoying. A part of my job is the servers' maintainer and deployer. My job is to keep the servers fast and stable. By now, we have around 10 servers using Amazon Web Service. There are many services need to be run properly, otherwise my work’s inbox will contain some new emails. There are some ruby scripts as well need to run on the production server. The problem is those scripts are a bit heavy, it took more than 50% of the cpu to process, and if we more than 2 simultaneously, we’ll see some complaints from customers saying that "our websites are performing slowly. Why?"</p>
+
+<p>Generally, we often lose our server because something is wrong on the server. We are really don't know why. It happens on one server after another. Until I decide to use monit to monitor many services as possible. It seems when the ubuntu server is heavily processing, the sshd service is down. We never know it was down. We just can’t remote our server. The solution is to reboot, but next few days it happens again. Usually, when something weird happens during the startup, the sshd service is never up. How can we remote to those servers? Clearly, there are no way if that service is down.</p>
+
+<p>I see the answer when I add monit on all servers, and I run some scripts on the server as usual. The next morning came up, two emails from monit saying "sshd is down" and "sshd is up". (I didn't notice about it until the next few days.) That's good, isn't it? I don't have to reboot the server. When monit detects there is no such service, it simply restart that service. By now, I don't really understand why sshd is always down when the server is heavily busy. I tried to upgrade to the latest AWS ami already, but the problem still exists. Maybe the server is too overloaded. The solution is to expand more servers or refactor those ruby processes.</p>
+
+<p>Be sure to monit sshd service to all your server.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>check process sshd with pidfile /var/run/sshd.pid&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;group system
+</span><span class='line'>start program  <span class="s2">&quot;/etc/init.d/ssh start&quot;</span>
+</span><span class='line'>stop program  <span class="s2">&quot;/etc/init.d/ssh stop&quot;</span>
+</span><span class='line'><span class="k">if </span>failed port 1234 protocol ssh <span class="k">then </span>restart
+</span><span class='line'><span class="k">if </span>5 restarts within 5 cycles <span class="k">then </span>timeout
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>You can checkout <a href="https://github.com/mojombo/god">God</a> as well if you want nicer syntax and more readable code.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby Object Model Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation/"/>
+    <updated>2010-08-17T10:13:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation</id>
+    <content type="html"><![CDATA[<p>I conduct a training on Ruby Object Model this week. I start talking about Ruby from scratch then the object model of Ruby. At the same time, I discussed about JavaScript object model.</p>
+
+<div style="width:425px" id="__ss_4978263"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/ruby-object-model-4978263" title="Ruby object model" target="_blank">Ruby object model</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4978263" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Meta-programming in Ruby and JavaScript]]></title>
+    <link href="http://chamnap.github.com/blog/2010/02/19/meta-programming-in-ruby-and-javascript/"/>
+    <updated>2010-02-19T17:50:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/02/19/meta-programming-in-ruby-and-javascript</id>
+    <content type="html"><![CDATA[<p>Recently, I have been working with writing a ruby gem, Yoolk API Gem. What is really interesting for me is I do some meta programming and object-oriented programming in Ruby which I have never experienced before. A few month later, there is a requirement that my team needs to write in JavaScript, but I don't want to touch JavaScript really much. Therefore, my team member took over this task. Whenever I write code in Ruby, I just try to think how to do it in JavaScript as well. Several things that came up to my mind with some from my team member:</p>
+
+<ul>
+<li>Defer class from a variable</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">klass</span> <span class="o">=</span> <span class="s2">&quot;Person&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">window</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class without namespace</span>
+</span><span class='line'><span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">yoolk</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class with namespace</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;klass = &quot;Person&quot;</span>
+</span><span class='line'><span class="sr">p = Object.const_get(klass).new #class without namespace</span>
+</span><span class='line'><span class="sr">p = Yoolk.const_get(klass).new #class with namespace</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<ul>
+<li>Access class method from instance object</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">getCount</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;p = Person.new</span>
+</span><span class='line'><span class="sr">p.class.count</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<ul>
+<li>Define method of an object</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;p = Person.new</span>
+</span><span class='line'><span class="sr">def p.hello</span>
+</span><span class='line'><span class="sr">  puts &quot;hello&quot;</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<ul>
+<li>Define class methods</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">Person</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;def Person.hello</span>
+</span><span class='line'><span class="sr">  puts &quot;hello&quot;</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>

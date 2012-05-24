@@ -1,0 +1,625 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Chamnap Chhorn</title>
+  <meta name="author" content="Chamnap Chhorn">
+
+  
+  <meta name="description" content="Recently, I have been working with writing a ruby gem, Yoolk API Gem. What is really interesting for me is I do some meta programming and object- &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://chamnap.github.com/blog/page/2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Chamnap Chhorn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31866777-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Chamnap Chhorn</a></h1>
+  
+    <h2>JavaScript and Ruby Developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:chamnap.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/02/19/meta-programming-in-ruby-and-javascript/">Meta-programming in Ruby and JavaScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-02-19T17:50:00+07:00" pubdate data-updated="true">Feb 19<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/02/19/meta-programming-in-ruby-and-javascript/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I have been working with writing a ruby gem, Yoolk API Gem. What is really interesting for me is I do some meta programming and object-oriented programming in Ruby which I have never experienced before. A few month later, there is a requirement that my team needs to write in JavaScript, but I don&#8217;t want to touch JavaScript really much. Therefore, my team member took over this task. Whenever I write code in Ruby, I just try to think how to do it in JavaScript as well. Several things that came up to my mind with some from my team member:</p>
+
+<ul>
+<li>Defer class from a variable</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">klass</span> <span class="o">=</span> <span class="s2">&quot;Person&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">window</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class without namespace</span>
+</span><span class='line'>    <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">yoolk</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class with namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">klass</span> <span class="o">=</span> <span class="s2">&quot;Person&quot;</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Object</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span><span class="o">.</span><span class="n">new</span> <span class="c1">#class without namespace</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Yoolk</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span><span class="o">.</span><span class="n">new</span> <span class="c1">#class with namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Access class method from instance object</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">getCount</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="nb">p</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">count</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Define method of an object</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">p</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">p</span><span class="o">.</span><span class="nf">hello</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;hello&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Define class methods</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">Person</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">def</span> <span class="nc">Person</span><span class="o">.</span><span class="nf">hello</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;hello&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009/">My Presentation at Barcamp Phnom Penh 2009</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-10-08T11:26:00+07:00" pubdate data-updated="true">Oct 8<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I did two presentations at Barcampp in last week. One is for people who starts learning about the web. I talked on many basic concepts, the history, and how the web works. Some of friends complained me that my slide is too much. Anyway, I think I missed several main points. I just feel it is a prime concept of the web, and it drives me really well since I started learning it. The other is about JavaScript in OOP way. It is the same topic but very compact as I used to do presentation in my office. I did fairly good with borey since some of the audiences interest my presentation.</p>
+
+<div style="width:425px" id="__ss_2046225"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/introduction-to-web-architecture" title="Introduction to Web Architecture" target="_blank">Introduction to Web Architecture</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/2046225" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/06/27/maintaining-javascript-pop-up-window-communication-across-window-opener-page-loads/">Maintaining Javascript Pop-Up Window Communication Across Window Opener Page Loads</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-06-27T18:05:00+07:00" pubdate data-updated="true">Jun 27<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/06/27/maintaining-javascript-pop-up-window-communication-across-window-opener-page-loads/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I came across a blog post that talks how to maintain a reference to javascript popup window while the parent window has been navigated away. This scenario doesn&#8217;t want to reload the child popup window. I just quoted out from 1 Pixel Out. There is a really nick trick.</p>
+
+<p>In the main window:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">popupWin</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">openPopup</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">&quot;popup.htm&quot;</span><span class="p">;</span>
+</span><span class='line'>   <span class="nx">popupWin</span> <span class="o">=</span> <span class="nx">open</span><span class="p">(</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">,</span> <span class="s2">&quot;width=500,height=400&quot;</span> <span class="p">);</span>
+</span><span class='line'>   <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="nx">popupWin</span> <span class="o">||</span> <span class="nx">popupWin</span><span class="p">.</span><span class="nx">closed</span> <span class="o">||</span> <span class="o">!</span><span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">popupWin</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="nx">url</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">,</span> <span class="s2">&quot;width=500,height=400&quot;</span> <span class="p">);</span>
+</span><span class='line'>   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">popupWin</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">doSomething</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">openPopup</span><span class="p">();</span>
+</span><span class='line'>   <span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the popup:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">self</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">doSomething</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m doing something&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://www.bennadel.com/blog/89-Maintaining-Javascript-Pop-Up-Window-Communication-Across-Window-Opener-Page-Loads.htm">http://www.bennadel.com/blog/89-Maintaining-Javascript-Pop-Up-Window-Communication-Across-Window-Opener-Page-Loads.htm</a>,
+<a href="http://www.1pixelout.net/2005/04/19/cross-window-javascript-communication/">http://www.1pixelout.net/2005/04/19/cross-window-javascript-communication/</a>,
+<a href="http://www.1pixelout.net/2006/12/15/cross-window-javascript-communication-20/">http://www.1pixelout.net/2006/12/15/cross-window-javascript-communication-20/</a>,
+<a href="http://www.1pixelout.net/wp-content/downloads/popups20.zip">http://www.1pixelout.net/wp-content/downloads/popups20.zip</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/06/27/cross-window-javascript-communication/">Cross-window Javascript Communication</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-06-27T10:00:00+07:00" pubdate data-updated="true">Jun 27<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/06/27/cross-window-javascript-communication/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It reminds me about uploading via iframe that I did a year ago when my colleague asked me to help with login openid in a popup window. It&#8217;s a similar story with this problem. Actually, login with openid could not place in a iframe because you could the code that prevents this.
+view plainprint?</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">top</span> <span class="o">==</span> <span class="nx">self</span><span class="p">)</span> <span class="p">{</span> <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="k">else</span>  <span class="p">{</span> <span class="nx">top</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">&quot;http://www.yahoo.com&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, let&#8217;s see a quick summary on this basic communication.</p>
+
+<p>Communication from parent to child window, you need to a reference of the child window so that can call any function in the child window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// Create a new popup window  </span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">popupWin</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// To call functions defined in the popup:  </span>
+</span><span class='line'>    <span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Communication from child to parent window, you need to use this way:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">opener</span><span class="p">.</span><span class="nx">doSomethingOnParent</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is the problem, the parent window needs to know when the uploading (in iframe) or logging in (in popup window) is done. The only way that the parent window can notified by the child window after finish processing. Usually, for uploading and logging in with openid, the action in your controller would render a view back. The trick is here on the onload of the body, you could notify the parent window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">def</span> <span class="nf">login</span>
+</span><span class='line'>      <span class="vi">@status</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>    <span class="nt">&lt;html&gt;&lt;head&gt;&lt;/head&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;window.opener.handleOpenIDResponse(&#39;&quot;</span> <span class="err">+</span> <span class="err">@</span><span class="na">status</span> <span class="err">+</span> <span class="err">&quot;&#39;);</span><span class="na">window</span><span class="err">.</span><span class="na">close</span><span class="err">();&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That would solve the problem, and you could send any information back through your view.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/05/13/javascript-in-object-oriented-way-presentation/">JavaScript in Object-Oriented Way Presentation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-05-13T10:59:00+07:00" pubdate data-updated="true">May 13<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/05/13/javascript-in-object-oriented-way-presentation/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand really well. This slide covers many advanced features of JavaScript: Function, Object, Closure,&#8230;. Some other points I have pointed out in this slide are about how to make private variable, public variable, static variable, privileged variable and how to do inheritance. I took about 20 different sources as my references and three famous authors. It took me two weeks, at every weekend, to finish this slide.</p>
+
+<div style="width:425px" id="__ss_1426608"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/javascript-in-objectoriented-way" title="JavaScript in Object-Oriented Way" target="_blank">JavaScript in Object-Oriented Way</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1426608" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/19/how-useful-is-monit/">How useful is monit?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/chamnap">@chamnap</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'chamnap',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("chamnap", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/chamnap" class="twitter-follow-button" data-show-count="false">Follow @chamnap</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Chamnap Chhorn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'chamnap';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

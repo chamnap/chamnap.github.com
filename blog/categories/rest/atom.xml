@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rest | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/rest/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-05-24T23:29:13+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The benefits of addressability in REST web service]]></title>
+    <link href="http://chamnap.github.com/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/"/>
+    <updated>2011-10-21T11:33:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service</id>
+    <content type="html"><![CDATA[<p>Here are some of my experience after working with <code>REST</code> web services for a few years. You may find it useful.</p>
+
+<ul>
+<li><code>The Web</code> Some people, like me previously, come from relational database won’t understand the benefit of the resource uri when talking about REST web service. They tend to realize more on the primary key of a database record rather than the resource uri. In the json response, the uri usually not being sent out to the client.</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Most of the cases, the above response should work without any problems. It just arrives when the client API needs to send requests again to that API (maybe it needs more data). Which resource uri? No one remembers it. They need to reconstruct the uri by itself which is a bad thing.</p>
+
+<ul>
+<li><code>Payload</code> The other thing arises on the connection between resources. Look at request payload:</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span><span class="p">,</span> <span class="s2">&quot;location_id&quot;</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Is it a relational database? You would feel with the sense of foreign keylocation_id. It would be better if:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span><span class="p">,</span> <span class="s2">&quot;location_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/locations/phnom-penh&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here, the server should be able to parse the uri, location the correct resource, and save it. The same thing should happen on the GET request of the resource as well.</p>
+
+<ul>
+<li>The <code>Location Header</code> in the response from server. In the case of 201 and 202 status code, this would benefit the client api, since they don’t have to construct the uri to request to see if that resource successfully processed.</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Location</span><span class="o">:</span> <span class="nx">http</span><span class="o">:</span><span class="c1">//api.example.com/users/chamnap</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<ul>
+<li><code>Url Navigation</code> One good example is pagination link on the resource. Again, the api client doesn’t have to build the uri in order to go next page. The main benefit of not building the uri on the client is that the server api is freely to change it without breaking the existing clients.</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;from&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/users/chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;I like it&quot;</span><span class="p">,</span> <span class="s2">&quot;next_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/post/1/comments?page=2&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<ul>
+<li><code>HATEOAS</code> in simple terms, means response from the server is dynamically bound to the context of the resource. For example, you just send a POST request to make an order. The response from should simple contain the current resource plus the uri to make payment or cancel this order. Doing this way, the client simply go through the uri provided by the server API.</li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;order_date&quot;</span><span class="o">:</span> <span class="s2">&quot;2011-11-11&quot;</span><span class="p">,</span> <span class="s2">&quot;payment_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/orders/1/payment&quot;</span><span class="p">,</span> <span class="s2">&quot;cancellation_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/orders/1/cancellation&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST Presenation on DevCamp]]></title>
+    <link href="http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp/"/>
+    <updated>2011-03-29T10:42:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp</id>
+    <content type="html"><![CDATA[<p>Last sunday, I talked to some people, around 10 software developers, about how to build web services using REST architecture. However, I didn't talk on my previous slide presentation. I took on <a href="http://chamnapchhorn.blogspot.com/2011/03/www.slideshare.net/kjbuckley/doing-rest-right-3385800">Doing REST Right</a> by Kerry Buckley. I decided to choose this slide because I feel I learnt something new and it's recommended by my boss, Chris. Actually, I were not well-prepared, but the presentation went well. I missed some slides before I went to do this presentation.</p>
+
+<div style="width:425px" id="__ss_3385800"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/kjbuckley/doing-rest-right-3385800" title="Doing REST Right" target="_blank">Doing REST Right</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/3385800" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/kjbuckley" target="_blank">Kerry Buckley</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST and RAILS Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2010/07/16/rest-and-rails-presentation/"/>
+    <updated>2010-07-16T21:04:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/07/16/rest-and-rails-presentation</id>
+    <content type="html"><![CDATA[<p>I made a presentation to <code>InSTEDD</code> guys recently on <code>REST</code>. This slide cover most parts related to <code>REST</code> and <code>RAILS</code>. Hope it could help.</p>
+
+<div style="width:425px" id="__ss_4758443"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/rest-web-services-in-rails" title="Rest and Rails" target="_blank">Rest and Rails</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4758443" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+</feed>

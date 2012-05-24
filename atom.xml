@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-05-24T23:29:13+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Unit Test or Integration Test?]]></title>
+    <link href="http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/"/>
+    <updated>2012-05-24T00:39:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test</id>
+    <content type="html"><![CDATA[<p>I were often asked when to do unit test or integration test, so I decided to write this blog post to clarify:</p>
+
+<h2>Unit Test</h2>
+
+<ul>
+<li><p>By definition</p>
+
+<ul>
+<li>it doesn&#8217;t talk to database</li>
+<li>it doesn&#8217;t communicate across the network</li>
+<li>it doesn&#8217;t touch the file system</li>
+</ul>
+</li>
+<li>Test a single module in isolation. We often use <code>stub</code> or <code>mock</code> its dependencies. When its tests fail, we know exactly because of itself.</li>
+<li>A <code>stub</code> object is a <code>fake object</code> and not part of the test. It can be replaced by any other objects.</li>
+<li>A <code>mock</code> object is also a <code>fake object</code>. A <code>mock</code> object contains behavior and it is part of what we want to test (collaborator).</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="no">Statement</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;logs a message on generate()&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">customer</span> <span class="o">=</span> <span class="n">stub</span><span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">customer</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;Aslak&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">logger</span>   <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">statement</span> <span class="o">=</span> <span class="no">Statement</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">logger</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:log</span><span class="p">)</span><span class="o">.</span><span class="n">with</span><span class="p">(</span><span class="sr">/Statement generated for Aslak/</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">statement</span><span class="o">.</span><span class="n">generate</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The above test would fail if the <code>logger</code> doesn&#8217;t call <code>#log</code> with the specified parameter. customer is simply a fake object with no behavior in the test, and it cannot make the test fail. Remember this test is about the logging a message.</li>
+<li>Kind of <code>White-box testing</code>. It tests internal workings of an application. You dictate the software that it should do this and do that.</li>
+<li>Generally, <code>private methods</code> are already tested indirectly by public methods. You should not test it explicitly. However, if you feel that private method is crucious to make your class work correctly, consider give it a better name and promote it as public method.</li>
+<li>Unit tests alone are not enough to make sure the application work correctly.</li>
+<li>Much faster than integration test.</li>
+<li>In Rails, there are functional tests: <code>model spec</code>, <code>controller spec</code> (it touches database).</li>
+</ul>
+
+
+<h2>Integration Test</h2>
+
+<ul>
+<li>It tests interaction between components to make sure these components work nicely with each other.</li>
+<li>Kind of <code>Acceptance Testing</code>, it focuses on what the user see and how the user interacts with the system. It can be called <code>Black-box testing</code> where we don&#8217;t care how it is done. We care only the outcome.</li>
+<li>Much slower than unit test.</li>
+<li>In Rails, it would be request spec and capybara.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;POST /tasks&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;creates task&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">tasks_path</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="s2">&quot;washing clothes&quot;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s2">&quot;Add&quot;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">&quot;Successfully added task.&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s2">&quot;washing clothes&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>The above test send the actual request to <code>/tasks</code>, fill out the form, and submit. It expects the content we filled out to be display in the page. If it&#8217;s a unit test (in this case, functional test aka. controller spec), we would test it differently. We won&#8217;t send the actual request, and we would assert it should receive <code>#save</code> on a <code>@task</code> object.</li>
+<li>It&#8217;s better than unit test because it mimics real user behaviors and it tests the entire stack of the application.</li>
+<li>Should we still write controller spec? The answer is <code>yes</code> for sad path and leave the happy path in the integration tests. Doing this make your tests a bit faster. <a href="http://solnic.eu/2012/02/02/yes-you-should-write-controller-tests.html">Check this blog</a></li>
+</ul>
+
+
+<h2>Where to get started?</h2>
+
+<ul>
+<li>Should we write unit test first or integration test first? If you haven&#8217;t watched <a href="http://railscasts.com/episodes/275-how-i-test">this episode</a> from <code>RailsCasts</code>, watch it. He followed the outside-in development, starting from request spec, controller spec, and model spec.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Remove focus options on your spec examples]]></title>
+    <link href="http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/"/>
+    <updated>2012-05-17T00:39:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples</id>
+    <content type="html"><![CDATA[<p>When using rspec in my rails projects, I often add <code>:focus =&gt; true</code> on <code>describe/context/it block</code> and let <code>guard</code> running the tests on those new specs. I need to remove it from various places to run the test fully. It&#8217;s a bit annoying, actually. Therefore, I decide to write a ruby script just to do this thing:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="n">founds</span> <span class="o">=</span> <span class="sb">`grep -n -r &quot;:focus =&gt; true&quot; spec/`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#path;line_number;matched_content</span>
+</span><span class='line'><span class="n">founds</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">string</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">array</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">path</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">line_number</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">matched_line</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="n">matched_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^\s*(describe|context|it).+(:focus\s*?=&gt;\s*?true do$)/</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="se">\e</span><span class="s2">[0;32m</span><span class="si">#{</span><span class="n">string</span><span class="si">}</span><span class="se">\e</span><span class="s2">[0m&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">system</span> <span class="s2">&quot;sed -i &#39;</span><span class="si">#{</span><span class="n">line_number</span><span class="si">}</span><span class="s2"> s/,</span><span class="se">\s</span><span class="s2">*:focus</span><span class="se">\s</span><span class="s2">*=&gt;</span><span class="se">\s</span><span class="s2">*true//&#39; </span><span class="si">#{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What this code does is checking all the spec directory to remove them on every <code>describe/context/it block</code>. You would see I use very strict regular expression just to ensure I&#8217;m doing the write thing. I placed this script under script directory of my rails app. You may write this code better, but this is how i do it. I also create a rake script and add to hg before commit hook.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">namespace</span> <span class="ss">:spec</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;remove :focus =&gt; true in all specs&quot;</span>
+</span><span class='line'>  <span class="n">task</span> <span class="ss">:remove_focus</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">require_relative</span> <span class="s1">&#39;../../script/remove_focus&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="n">hooks</span><span class="o">]</span>
+</span><span class='line'><span class="n">precommit</span> <span class="o">=</span> <span class="n">script</span><span class="o">/</span><span class="n">remove_focus</span><span class="o">.</span><span class="n">rb</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[What we should do as a software developer]]></title>
+    <link href="http://chamnap.github.com/blog/2011/10/23/what-we-should-do/"/>
+    <updated>2011-10-23T20:47:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/10/23/what-we-should-do</id>
+    <content type="html"><![CDATA[<p>I have been working at Yoolk for about 3 years and a half. It is an enjoyable and challenging workplace I have ever worked. Just to share my thoughts, my skills and how and where I should improve more.
+After gone through several ruby books, I was convinced again and again to write the test before I code. Basically, I could do this since the day I joined the Mango team, however that was my bad habit to write the test after. It&#8217;s probably because I&#8217;m very curious and anxious to see the result rather than see the test. Actually, at that time my testing theory was so poor. It was probably a year after I get promoted, I spent quite a lot of time to read the Testing theory from various books, but still write the test after writing code.</p>
+
+<p>Two months ago, I have gone through many links that describes how professional rubyists do while coding. I have learnt how to do intergration testing, cucumber, capybara, factory_girl, and rails 3. I feel I need to do some experiments, so I took a chance at my work to improve test coverage. Even though I could not do very well at the first time, I still write test later and open browser for testing at some times, it&#8217;s a very nice experience to follow. Testing drives me really well.</p>
+
+<p>Another problem is that I often get distracted during working. Some people asked me to do this, other people have some questions. It&#8217;s just messing my workflow and the rythm. Sometimes, there are some urgent emails needed to reply quickly or servers are down. All sorts of those things make me less enjoyable to code. Thinking back again, what I could do is to write documentation more. Because I&#8217;m the one who writes the main API used by many people. Those people would need to consult with the documentation rather than me. Only the critical issues should come to me. That would helped me much. Just to write all documentation in one go is a boring task because now the API is fairly full-featured. Therefore, I took another chance to write a documentation on my new Audit API, and I would tell everyone go through that before asking me. Then, I would rest in peace while coding.</p>
+
+<p>I have watched a few episodes from peepcode as well. I feel I was addicted to checking email, news, facebook, twitter. It is burnt me down sometimes. I got very little done. I reviewed my daily work, and I solved those problems. I took those offline while I&#8217;m coding. I only checked mail few times per day, checking facebook only when I finish a task. Then, everything is back to productivity.</p>
+
+<p>The other thing I never done before is contributing to open source community. I have working with many oss projects, but I never contribute back. It&#8217;s because I don&#8217;t know how to do so, why I should do. Now, I understand why it&#8217;s important and quite useful to others. I have fixed a few bugs on the open source projects. the problem is that I need to learn in order to commit the code back. I used to ask my coworker how to do, but he didn&#8217;t explain me very well. In the next week, I would try to do on my own to contribute back of what I have done for my personal projects.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[The benefits of addressability in REST web service]]></title>
+    <link href="http://chamnap.github.com/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/"/>
+    <updated>2011-10-21T11:33:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service</id>
+    <content type="html"><![CDATA[<p>Here are some of my experience after working with <code>REST</code> web services for a few years. You may find it useful.</p>
+
+<ul>
+<li><code>The Web</code> Some people, like me previously, come from relational database won’t understand the benefit of the resource uri when talking about REST web service. They tend to realize more on the primary key of a database record rather than the resource uri. In the json response, the uri usually not being sent out to the client.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Most of the cases, the above response should work without any problems. It just arrives when the client API needs to send requests again to that API (maybe it needs more data). Which resource uri? No one remembers it. They need to reconstruct the uri by itself which is a bad thing.</p>
+
+<ul>
+<li><code>Payload</code> The other thing arises on the connection between resources. Look at request payload:</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span><span class="p">,</span> <span class="s2">&quot;location_id&quot;</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Is it a relational database? You would feel with the sense of foreign keylocation_id. It would be better if:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;job&quot;</span><span class="o">:</span> <span class="s2">&quot;developer&quot;</span><span class="p">,</span> <span class="s2">&quot;location_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/locations/phnom-penh&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, the server should be able to parse the uri, location the correct resource, and save it. The same thing should happen on the GET request of the resource as well.</p>
+
+<ul>
+<li>The <code>Location Header</code> in the response from server. In the case of 201 and 202 status code, this would benefit the client api, since they don’t have to construct the uri to request to see if that resource successfully processed.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Location</span><span class="o">:</span> <span class="nx">http</span><span class="o">:</span><span class="c1">//api.example.com/users/chamnap</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>Url Navigation</code> One good example is pagination link on the resource. Again, the api client doesn’t have to build the uri in order to go next page. The main benefit of not building the uri on the client is that the server api is freely to change it without breaking the existing clients.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;from&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/users/chamnap&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;I like it&quot;</span><span class="p">,</span> <span class="s2">&quot;next_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/post/1/comments?page=2&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>HATEOAS</code> in simple terms, means response from the server is dynamically bound to the context of the resource. For example, you just send a POST request to make an order. The response from should simple contain the current resource plus the uri to make payment or cancel this order. Doing this way, the client simply go through the uri provided by the server API.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;order_date&quot;</span><span class="o">:</span> <span class="s2">&quot;2011-11-11&quot;</span><span class="p">,</span> <span class="s2">&quot;payment_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/orders/1/payment&quot;</span><span class="p">,</span> <span class="s2">&quot;cancellation_uri&quot;</span><span class="o">:</span> <span class="s2">&quot;http://api.example.com/orders/1/cancellation&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How useful is monit?]]></title>
+    <link href="http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/"/>
+    <updated>2011-10-19T16:09:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit</id>
+    <content type="html"><![CDATA[<p>From here assuming that you know what monit is, but if you don’t, just go to see <a href="http://mmonit.com/monit/">Monit</a>. It’s basically a monitoring utility in unix system. You could monitor almost anything in your server. It’ll automatically restart the service if it stops and send you an email.</p>
+
+<p>Generally, some people don&#8217;t like it very much because it send too many emails when your server is in trouble, and those emails are annoying. A part of my job is the servers&#8217; maintainer and deployer. My job is to keep the servers fast and stable. By now, we have around 10 servers using Amazon Web Service. There are many services need to be run properly, otherwise my work’s inbox will contain some new emails. There are some ruby scripts as well need to run on the production server. The problem is those scripts are a bit heavy, it took more than 50% of the cpu to process, and if we more than 2 simultaneously, we’ll see some complaints from customers saying that &#8220;our websites are performing slowly. Why?&#8221;</p>
+
+<p>Generally, we often lose our server because something is wrong on the server. We are really don&#8217;t know why. It happens on one server after another. Until I decide to use monit to monitor many services as possible. It seems when the ubuntu server is heavily processing, the sshd service is down. We never know it was down. We just can’t remote our server. The solution is to reboot, but next few days it happens again. Usually, when something weird happens during the startup, the sshd service is never up. How can we remote to those servers? Clearly, there are no way if that service is down.</p>
+
+<p>I see the answer when I add monit on all servers, and I run some scripts on the server as usual. The next morning came up, two emails from monit saying &#8220;sshd is down&#8221; and &#8220;sshd is up&#8221;. (I didn&#8217;t notice about it until the next few days.) That&#8217;s good, isn&#8217;t it? I don&#8217;t have to reboot the server. When monit detects there is no such service, it simply restart that service. By now, I don&#8217;t really understand why sshd is always down when the server is heavily busy. I tried to upgrade to the latest AWS ami already, but the problem still exists. Maybe the server is too overloaded. The solution is to expand more servers or refactor those ruby processes.</p>
+
+<p>Be sure to monit sshd service to all your server.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>check process sshd with pidfile /var/run/sshd.pid
+</span><span class='line'>    group system
+</span><span class='line'>    start program  <span class="s2">&quot;/etc/init.d/ssh start&quot;</span>
+</span><span class='line'>    stop program  <span class="s2">&quot;/etc/init.d/ssh stop&quot;</span>
+</span><span class='line'>    <span class="k">if </span>failed port 1234 protocol ssh <span class="k">then </span>restart
+</span><span class='line'>    <span class="k">if </span>5 restarts within 5 cycles <span class="k">then </span>timeout
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can checkout <a href="https://github.com/mojombo/god">God</a> as well if you want nicer syntax and more readable code.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Add ssh key to your ubuntu server]]></title>
+    <link href="http://chamnap.github.com/blog/2011/05/06/add-ssh-key-to-your-ubuntu-server/"/>
+    <updated>2011-05-06T02:27:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/05/06/add-ssh-key-to-your-ubuntu-server</id>
+    <content type="html"><![CDATA[<p>Add ssh-key to your ubuntu server is a common task for most developers to be able to remote your dedicated server via SSH. Normally, I do this with my local virtual box server. It&#8217;s fairly easy to do so. Here, I just copied the steps from Yoolk Wiki, written by my boss, Chris.</p>
+
+<p>Generally, it works well on Ubuntu 9.04, but there is problem with Ubuntu 10.04. I&#8217;ll show you here:</p>
+
+<ol>
+<li>server: <code>sudo apt-get update</code></li>
+<li>server: <code>sudo apt-get install openssh-server</code></li>
+<li>server: <code>mkdir .ssh</code></li>
+<li>client: <code>ssh-keygen</code> (don&#8217;t enter any values, press return three times, yes passwords should be blank)</li>
+<li>client: <code>cat .ssh/id_rsa.pub</code> - copy the output to the clipboard (very carefully, no pre/trailing white space)</li>
+<li>server: <code>touch .ssh/authorized_keys</code></li>
+<li>server: <code>sudo vim .ssh/authorized_keys</code> - paste clipboard contents (in order to paste from clipboard, you must remote to your server by login through terminal console)</li>
+</ol>
+
+
+<p>For Ubuntu 10.04, you must run this command <code>ssh-add</code>. If it adds duplicate keys, run <code>ssh-add -D</code> and run <code>ssh-add</code> again. Hope it could help.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[High Performance Website at Hackerspacepp]]></title>
+    <link href="http://chamnap.github.com/blog/2011/04/30/high-performance-website-at-hackerspacepp/"/>
+    <updated>2011-04-30T00:55:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/04/30/high-performance-website-at-hackerspacepp</id>
+    <content type="html"><![CDATA[<p>I&#8217;m a little bit disappointed in myself. What I intended to do presentation is about Web Scaling, but I ended up with go through the front end side. This presentation will focus on how to make your website faster on the front end side. I did focus on some aspects on HTTP concept as well. Those are rules from Steve Souders, but I modify and adjust to make it clear to the audience.</p>
+
+<div style="width:425px" id="__ss_7783873"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/high-performance-website-7783873" title="High performance website" target="_blank">High performance website</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7783873" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST Presenation on DevCamp]]></title>
+    <link href="http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp/"/>
+    <updated>2011-03-29T10:42:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp</id>
+    <content type="html"><![CDATA[<p>Last sunday, I talked to some people, around 10 software developers, about how to build web services using REST architecture. However, I didn&#8217;t talk on my previous slide presentation. I took on <a href="http://chamnapchhorn.blogspot.com/2011/03/www.slideshare.net/kjbuckley/doing-rest-right-3385800">Doing REST Right</a> by Kerry Buckley. I decided to choose this slide because I feel I learnt something new and it&#8217;s recommended by my boss, Chris. Actually, I were not well-prepared, but the presentation went well. I missed some slides before I went to do this presentation.</p>
+
+<div style="width:425px" id="__ss_3385800"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/kjbuckley/doing-rest-right-3385800" title="Doing REST Right" target="_blank">Doing REST Right</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/3385800" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/kjbuckley" target="_blank">Kerry Buckley</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby Object Model Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation/"/>
+    <updated>2010-08-17T10:13:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation</id>
+    <content type="html"><![CDATA[<p>I conduct a training on Ruby Object Model this week. I start talking about Ruby from scratch then the object model of Ruby. At the same time, I discussed about JavaScript object model.</p>
+
+<div style="width:425px" id="__ss_4978263"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/ruby-object-model-4978263" title="Ruby object model" target="_blank">Ruby object model</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4978263" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST and RAILS Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2010/07/16/rest-and-rails-presentation/"/>
+    <updated>2010-07-16T21:04:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/07/16/rest-and-rails-presentation</id>
+    <content type="html"><![CDATA[<p>I made a presentation to <code>InSTEDD</code> guys recently on <code>REST</code>. This slide cover most parts related to <code>REST</code> and <code>RAILS</code>. Hope it could help.</p>
+
+<div style="width:425px" id="__ss_4758443"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/rest-web-services-in-rails" title="Rest and Rails" target="_blank">Rest and Rails</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4758443" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Meta-programming in Ruby and JavaScript]]></title>
+    <link href="http://chamnap.github.com/blog/2010/02/19/meta-programming-in-ruby-and-javascript/"/>
+    <updated>2010-02-19T17:50:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/02/19/meta-programming-in-ruby-and-javascript</id>
+    <content type="html"><![CDATA[<p>Recently, I have been working with writing a ruby gem, Yoolk API Gem. What is really interesting for me is I do some meta programming and object-oriented programming in Ruby which I have never experienced before. A few month later, there is a requirement that my team needs to write in JavaScript, but I don&#8217;t want to touch JavaScript really much. Therefore, my team member took over this task. Whenever I write code in Ruby, I just try to think how to do it in JavaScript as well. Several things that came up to my mind with some from my team member:</p>
+
+<ul>
+<li>Defer class from a variable</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">klass</span> <span class="o">=</span> <span class="s2">&quot;Person&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">window</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class without namespace</span>
+</span><span class='line'>    <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">yoolk</span><span class="p">[</span><span class="nx">klass</span><span class="p">];</span> <span class="c1">//class with namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">klass</span> <span class="o">=</span> <span class="s2">&quot;Person&quot;</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Object</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span><span class="o">.</span><span class="n">new</span> <span class="c1">#class without namespace</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Yoolk</span><span class="o">.</span><span class="n">const_get</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span><span class="o">.</span><span class="n">new</span> <span class="c1">#class with namespace</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Access class method from instance object</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">getCount</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="nb">p</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">count</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Define method of an object</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">p</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">p</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">p</span><span class="o">.</span><span class="nf">hello</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;hello&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Define class methods</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">Person</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">def</span> <span class="nc">Person</span><span class="o">.</span><span class="nf">hello</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;hello&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My Presentation at Barcamp Phnom Penh 2009]]></title>
+    <link href="http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009/"/>
+    <updated>2009-10-08T11:26:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009</id>
+    <content type="html"><![CDATA[<p>I did two presentations at Barcampp in last week. One is for people who starts learning about the web. I talked on many basic concepts, the history, and how the web works. Some of friends complained me that my slide is too much. Anyway, I think I missed several main points. I just feel it is a prime concept of the web, and it drives me really well since I started learning it. The other is about JavaScript in OOP way. It is the same topic but very compact as I used to do presentation in my office. I did fairly good with borey since some of the audiences interest my presentation.</p>
+
+<div style="width:425px" id="__ss_2046225"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/introduction-to-web-architecture" title="Introduction to Web Architecture" target="_blank">Introduction to Web Architecture</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/2046225" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Maintaining Javascript Pop-Up Window Communication Across Window Opener Page Loads]]></title>
+    <link href="http://chamnap.github.com/blog/2009/06/27/maintaining-javascript-pop-up-window-communication-across-window-opener-page-loads/"/>
+    <updated>2009-06-27T18:05:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/06/27/maintaining-javascript-pop-up-window-communication-across-window-opener-page-loads</id>
+    <content type="html"><![CDATA[<p>I came across a blog post that talks how to maintain a reference to javascript popup window while the parent window has been navigated away. This scenario doesn&#8217;t want to reload the child popup window. I just quoted out from 1 Pixel Out. There is a really nick trick.</p>
+
+<p>In the main window:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">popupWin</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">openPopup</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">&quot;popup.htm&quot;</span><span class="p">;</span>
+</span><span class='line'>   <span class="nx">popupWin</span> <span class="o">=</span> <span class="nx">open</span><span class="p">(</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">,</span> <span class="s2">&quot;width=500,height=400&quot;</span> <span class="p">);</span>
+</span><span class='line'>   <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="nx">popupWin</span> <span class="o">||</span> <span class="nx">popupWin</span><span class="p">.</span><span class="nx">closed</span> <span class="o">||</span> <span class="o">!</span><span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">popupWin</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="nx">url</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">,</span> <span class="s2">&quot;width=500,height=400&quot;</span> <span class="p">);</span>
+</span><span class='line'>   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">popupWin</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">doSomething</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">openPopup</span><span class="p">();</span>
+</span><span class='line'>   <span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the popup:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">self</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">doSomething</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m doing something&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://www.bennadel.com/blog/89-Maintaining-Javascript-Pop-Up-Window-Communication-Across-Window-Opener-Page-Loads.htm">http://www.bennadel.com/blog/89-Maintaining-Javascript-Pop-Up-Window-Communication-Across-Window-Opener-Page-Loads.htm</a>,
+<a href="http://www.1pixelout.net/2005/04/19/cross-window-javascript-communication/">http://www.1pixelout.net/2005/04/19/cross-window-javascript-communication/</a>,
+<a href="http://www.1pixelout.net/2006/12/15/cross-window-javascript-communication-20/">http://www.1pixelout.net/2006/12/15/cross-window-javascript-communication-20/</a>,
+<a href="http://www.1pixelout.net/wp-content/downloads/popups20.zip">http://www.1pixelout.net/wp-content/downloads/popups20.zip</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cross-window Javascript communication]]></title>
+    <link href="http://chamnap.github.com/blog/2009/06/27/cross-window-javascript-communication/"/>
+    <updated>2009-06-27T10:00:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/06/27/cross-window-javascript-communication</id>
+    <content type="html"><![CDATA[<p>It reminds me about uploading via iframe that I did a year ago when my colleague asked me to help with login openid in a popup window. It&#8217;s a similar story with this problem. Actually, login with openid could not place in a iframe because you could the code that prevents this.
+view plainprint?</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">top</span> <span class="o">==</span> <span class="nx">self</span><span class="p">)</span> <span class="p">{</span> <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="k">else</span>  <span class="p">{</span> <span class="nx">top</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">&quot;http://www.yahoo.com&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, let&#8217;s see a quick summary on this basic communication.</p>
+
+<p>Communication from parent to child window, you need to a reference of the child window so that can call any function in the child window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// Create a new popup window  </span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">popupWin</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// To call functions defined in the popup:  </span>
+</span><span class='line'>    <span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Communication from child to parent window, you need to use this way:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">opener</span><span class="p">.</span><span class="nx">doSomethingOnParent</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is the problem, the parent window needs to know when the uploading (in iframe) or logging in (in popup window) is done. The only way that the parent window can notified by the child window after finish processing. Usually, for uploading and logging in with openid, the action in your controller would render a view back. The trick is here on the onload of the body, you could notify the parent window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">def</span> <span class="nf">login</span>
+</span><span class='line'>      <span class="vi">@status</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>    <span class="nt">&lt;html&gt;&lt;head&gt;&lt;/head&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;window.opener.handleOpenIDResponse(&#39;&quot;</span> <span class="err">+</span> <span class="err">@</span><span class="na">status</span> <span class="err">+</span> <span class="err">&quot;&#39;);</span><span class="na">window</span><span class="err">.</span><span class="na">close</span><span class="err">();&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That would solve the problem, and you could send any information back through your view.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript in Object-Oriented Way Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation/"/>
+    <updated>2009-05-13T10:59:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation</id>
+    <content type="html"><![CDATA[<p>I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand really well. This slide covers many advanced features of JavaScript: Function, Object, Closure,&#8230;. Some other points I have pointed out in this slide are about how to make private variable, public variable, static variable, privileged variable and how to do inheritance. I took about 20 different sources as my references and three famous authors. It took me two weeks, at every weekend, to finish this slide.</p>
+
+<div style="width:425px" id="__ss_1426608"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/javascript-in-objectoriented-way" title="JavaScript in Object-Oriented Way" target="_blank">JavaScript in Object-Oriented Way</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1426608" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+</feed>

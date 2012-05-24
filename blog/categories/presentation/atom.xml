@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: presentation | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/presentation/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-05-24T23:29:13+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[High Performance Website at Hackerspacepp]]></title>
+    <link href="http://chamnap.github.com/blog/2011/04/30/high-performance-website-at-hackerspacepp/"/>
+    <updated>2011-04-30T00:55:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/04/30/high-performance-website-at-hackerspacepp</id>
+    <content type="html"><![CDATA[<p>I'm a little bit disappointed in myself. What I intended to do presentation is about Web Scaling, but I ended up with go through the front end side. This presentation will focus on how to make your website faster on the front end side. I did focus on some aspects on HTTP concept as well. Those are rules from Steve Souders, but I modify and adjust to make it clear to the audience.</p>
+
+<div style="width:425px" id="__ss_7783873"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/high-performance-website-7783873" title="High performance website" target="_blank">High performance website</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7783873" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[REST Presenation on DevCamp]]></title>
+    <link href="http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp/"/>
+    <updated>2011-03-29T10:42:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2011/03/29/rest-presenation-on-devcamp</id>
+    <content type="html"><![CDATA[<p>Last sunday, I talked to some people, around 10 software developers, about how to build web services using REST architecture. However, I didn't talk on my previous slide presentation. I took on <a href="http://chamnapchhorn.blogspot.com/2011/03/www.slideshare.net/kjbuckley/doing-rest-right-3385800">Doing REST Right</a> by Kerry Buckley. I decided to choose this slide because I feel I learnt something new and it's recommended by my boss, Chris. Actually, I were not well-prepared, but the presentation went well. I missed some slides before I went to do this presentation.</p>
+
+<div style="width:425px" id="__ss_3385800"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/kjbuckley/doing-rest-right-3385800" title="Doing REST Right" target="_blank">Doing REST Right</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/3385800" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/kjbuckley" target="_blank">Kerry Buckley</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby Object Model Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation/"/>
+    <updated>2010-08-17T10:13:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2010/08/17/ruby-object-model-presentation</id>
+    <content type="html"><![CDATA[<p>I conduct a training on Ruby Object Model this week. I start talking about Ruby from scratch then the object model of Ruby. At the same time, I discussed about JavaScript object model.</p>
+
+<div style="width:425px" id="__ss_4978263"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/ruby-object-model-4978263" title="Ruby object model" target="_blank">Ruby object model</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4978263" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My Presentation at Barcamp Phnom Penh 2009]]></title>
+    <link href="http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009/"/>
+    <updated>2009-10-08T11:26:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009</id>
+    <content type="html"><![CDATA[<p>I did two presentations at Barcampp in last week. One is for people who starts learning about the web. I talked on many basic concepts, the history, and how the web works. Some of friends complained me that my slide is too much. Anyway, I think I missed several main points. I just feel it is a prime concept of the web, and it drives me really well since I started learning it. The other is about JavaScript in OOP way. It is the same topic but very compact as I used to do presentation in my office. I did fairly good with borey since some of the audiences interest my presentation.</p>
+
+<div style="width:425px" id="__ss_2046225"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/introduction-to-web-architecture" title="Introduction to Web Architecture" target="_blank">Introduction to Web Architecture</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/2046225" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript in Object-Oriented Way Presentation]]></title>
+    <link href="http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation/"/>
+    <updated>2009-05-13T10:59:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation</id>
+    <content type="html"><![CDATA[<p>I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand really well. This slide covers many advanced features of JavaScript: Function, Object, Closure,.... Some other points I have pointed out in this slide are about how to make private variable, public variable, static variable, privileged variable and how to do inheritance. I took about 20 different sources as my references and three famous authors. It took me two weeks, at every weekend, to finish this slide.</p>
+
+<div style="width:425px" id="__ss_1426608"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/javascript-in-objectoriented-way" title="JavaScript in Object-Oriented Way" target="_blank">JavaScript in Object-Oriented Way</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1426608" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+</feed>

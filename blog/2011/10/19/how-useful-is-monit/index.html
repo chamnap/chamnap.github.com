@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How useful is monit? - Chamnap Chhorn</title>
+  <meta name="author" content="Chamnap Chhorn">
+
+  
+  <meta name="description" content="From here assuming that you know what monit is, but if you don’t, just go to see Monit. It’s basically a monitoring utility in unix system. You could &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Chamnap Chhorn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31866777-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Chamnap Chhorn</a></h1>
+  
+    <h2>JavaScript and Ruby Developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:chamnap.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How Useful Is Monit?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T16:09:00+07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>From here assuming that you know what monit is, but if you don’t, just go to see <a href="http://mmonit.com/monit/">Monit</a>. It’s basically a monitoring utility in unix system. You could monitor almost anything in your server. It’ll automatically restart the service if it stops and send you an email.</p>
+
+<p>Generally, some people don&#8217;t like it very much because it send too many emails when your server is in trouble, and those emails are annoying. A part of my job is the servers&#8217; maintainer and deployer. My job is to keep the servers fast and stable. By now, we have around 10 servers using Amazon Web Service. There are many services need to be run properly, otherwise my work’s inbox will contain some new emails. There are some ruby scripts as well need to run on the production server. The problem is those scripts are a bit heavy, it took more than 50% of the cpu to process, and if we more than 2 simultaneously, we’ll see some complaints from customers saying that &#8220;our websites are performing slowly. Why?&#8221;</p>
+
+<p>Generally, we often lose our server because something is wrong on the server. We are really don&#8217;t know why. It happens on one server after another. Until I decide to use monit to monitor many services as possible. It seems when the ubuntu server is heavily processing, the sshd service is down. We never know it was down. We just can’t remote our server. The solution is to reboot, but next few days it happens again. Usually, when something weird happens during the startup, the sshd service is never up. How can we remote to those servers? Clearly, there are no way if that service is down.</p>
+
+<p>I see the answer when I add monit on all servers, and I run some scripts on the server as usual. The next morning came up, two emails from monit saying &#8220;sshd is down&#8221; and &#8220;sshd is up&#8221;. (I didn&#8217;t notice about it until the next few days.) That&#8217;s good, isn&#8217;t it? I don&#8217;t have to reboot the server. When monit detects there is no such service, it simply restart that service. By now, I don&#8217;t really understand why sshd is always down when the server is heavily busy. I tried to upgrade to the latest AWS ami already, but the problem still exists. Maybe the server is too overloaded. The solution is to expand more servers or refactor those ruby processes.</p>
+
+<p>Be sure to monit sshd service to all your server.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>check process sshd with pidfile /var/run/sshd.pid
+</span><span class='line'>    group system
+</span><span class='line'>    start program  <span class="s2">&quot;/etc/init.d/ssh start&quot;</span>
+</span><span class='line'>    stop program  <span class="s2">&quot;/etc/init.d/ssh stop&quot;</span>
+</span><span class='line'>    <span class="k">if </span>failed port 1234 protocol ssh <span class="k">then </span>restart
+</span><span class='line'>    <span class="k">if </span>5 restarts within 5 cycles <span class="k">then </span>timeout
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can checkout <a href="https://github.com/mojombo/god">God</a> as well if you want nicer syntax and more readable code.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Chamnap Chhorn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T16:09:00+07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gems/'>gems</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/05/06/add-ssh-key-to-your-ubuntu-server/" title="Previous Post: Add ssh key to your ubuntu server">&laquo; Add ssh key to your ubuntu server</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/" title="Next Post: The benefits of addressability in REST web service">The benefits of addressability in REST web service &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/19/how-useful-is-monit/">How useful is monit?</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/chamnap">@chamnap</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'chamnap',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("chamnap", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/chamnap" class="twitter-follow-button" data-show-count="false">Follow @chamnap</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Chamnap Chhorn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'chamnap';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/';
+        var disqus_url = 'http://chamnap.github.com/blog/2011/10/19/how-useful-is-monit/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

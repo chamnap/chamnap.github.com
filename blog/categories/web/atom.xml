@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: web | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/web/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-05-24T23:29:13+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My Presentation at Barcamp Phnom Penh 2009]]></title>
+    <link href="http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009/"/>
+    <updated>2009-10-08T11:26:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/10/08/my-presentation-at-barcamp-phnom-penh-2009</id>
+    <content type="html"><![CDATA[<p>I did two presentations at Barcampp in last week. One is for people who starts learning about the web. I talked on many basic concepts, the history, and how the web works. Some of friends complained me that my slide is too much. Anyway, I think I missed several main points. I just feel it is a prime concept of the web, and it drives me really well since I started learning it. The other is about JavaScript in OOP way. It is the same topic but very compact as I used to do presentation in my office. I did fairly good with borey since some of the audiences interest my presentation.</p>
+
+<div style="width:425px" id="__ss_2046225"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/introduction-to-web-architecture" title="Introduction to Web Architecture" target="_blank">Introduction to Web Architecture</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/2046225" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+
+]]></content>
+  </entry>
+  
+</feed>
