@@ -1,0 +1,17 @@
+---
+layout: post
+title: "What we should do as a software developer"
+date: 2011-10-23 20:47
+comments: true
+categories: [developer]
+---
+I have been working at Yoolk for about 3 years and a half. It is an enjoyable and challenging workplace I have ever worked. Just to share my thoughts, my skills and how and where I should improve more.
+After gone through several ruby books, I was convinced again and again to write the test before I code. Basically, I could do this since the day I joined the Mango team, however that was my bad habit to write the test after. It's probably because I'm very curious and anxious to see the result rather than see the test. Actually, at that time my testing theory was so poor. It was probably a year after I get promoted, I spent quite a lot of time to read the Testing theory from various books, but still write the test after writing code. 
+
+Two months ago, I have gone through many links that describes how professional rubyists do while coding. I have learnt how to do intergration testing, cucumber, capybara, factory_girl, and rails 3. I feel I need to do some experiments, so I took a chance at my work to improve test coverage. Even though I could not do very well at the first time, I still write test later and open browser for testing at some times, it's a very nice experience to follow. Testing drives me really well.
+
+Another problem is that I often get distracted during working. Some people asked me to do this, other people have some questions. It's just messing my workflow and the rythm. Sometimes, there are some urgent emails needed to reply quickly or servers are down. All sorts of those things make me less enjoyable to code. Thinking back again, what I could do is to write documentation more. Because I'm the one who writes the main API used by many people. Those people would need to consult with the documentation rather than me. Only the critical issues should come to me. That would helped me much. Just to write all documentation in one go is a boring task because now the API is fairly full-featured. Therefore, I took another chance to write a documentation on my new Audit API, and I would tell everyone go through that before asking me. Then, I would rest in peace while coding.
+
+I have watched a few episodes from peepcode as well. I feel I was addicted to checking email, news, facebook, twitter. It is burnt me down sometimes. I got very little done. I reviewed my daily work, and I solved those problems. I took those offline while I'm coding. I only checked mail few times per day, checking facebook only when I finish a task. Then, everything is back to productivity.
+
+The other thing I never done before is contributing to open source community. I have working with many oss projects, but I never contribute back. It's because I don't know how to do so, why I should do. Now, I understand why it's important and quite useful to others. I have fixed a few bugs on the open source projects. the problem is that I need to learn in order to commit the code back. I used to ask my coworker how to do, but he didn't explain me very well. In the next week, I would try to do on my own to contribute back of what I have done for my personal projects.
