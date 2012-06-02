@@ -4,7 +4,7 @@
   <title><![CDATA[Category: refactoring | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/refactoring/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-02T15:56:07+07:00</updated>
+  <updated>2012-06-02T22:13:21+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -27,10 +27,11 @@
 <p>It looks simple to experienced <code>Rails</code> developers, but it's useful for novice people. Here are some tips to reduce <code>if/else</code> statements:</p>
 
 <ul>
-<li>use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method
-As the method name, it's a cleaner way to get/create objects without <code>if/else</code>.</li>
+<li>Use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method</li>
 </ul>
 
+
+<p>As the method name, it's a cleaner way to get/create objects without <code>if/else</code>.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -57,10 +58,11 @@ As the method name, it's a cleaner way to get/create objects without <code>if/el
 <p>Be sure to check more about these methods if you didn't know on <a href="http://api.rubyonrails.org/classes/ActiveRecord/Base.html">http://api.rubyonrails.org/classes/ActiveRecord/Base.html</a> in the <strong>Dynamic attribute-based finders</strong> section.</p>
 
 <ul>
-<li>use <code>try</code> for possible nil object
-Invoke <code>try</code> for object that could be nil. It's more convienient than doing a check by yourself.</li>
+<li>Use <code>try</code> for possible nil object</li>
 </ul>
 
+
+<p>Invoke <code>try</code> for object that could be nil. It's more convienient than doing a check by yourself.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -113,20 +115,22 @@ Invoke <code>try</code> for object that could be nil. It's more convienient than
 <p>Check this document, <a href="http://api.rubyonrails.org/classes/Object.html#method-i-try">http://api.rubyonrails.org/classes/Object.html#method-i-try</a> as well.</p>
 
 <ul>
-<li>use <code>||</code> operator + <code>presence</code> method
-The <code>||</code> is a common idiom in Ruby. However, it doesn't work well if the first operand is empty string. The <code>presence</code> method will return nil instead of "" if the object is `blank?``, otherwise it return the actual object back.</li>
+<li>Use <code>||</code> operator + <code>presence</code> method</li>
 </ul>
 
+
+<p>The <code>||</code> is a common idiom in Ruby. However, it doesn't work well if the first operand is empty string. The <code>presence</code> method will return nil instead of "" if the object is `blank?``, otherwise it return the actual object back.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="ss">:host</span><span class="o">].</span><span class="n">presence</span> <span class="o">||</span> <span class="s1">&#39;localhost&#39;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <ul>
-<li>use default value
-Use default value so that you don't else clause.</li>
+<li>Use default value</li>
 </ul>
 
+
+<p>Use default value so that you don't else clause.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -143,10 +147,11 @@ Use default value so that you don't else clause.</li>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <ul>
-<li>keep the if/else logic in fewer places
-Wrap them in a function and reuse it where it is possible. Sometimes, it 's hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</li>
+<li>Keep the if/else logic in fewer places</li>
 </ul>
 
+
+<p>Wrap them in a function and reuse it where it is possible. Sometimes, it 's hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</p>
 
 <p>If you feel you are doing too much <code>if/else</code>, go back one step why you are doing that way. Try to use the correct objects that fit to your scenarios.</p>
 
@@ -285,9 +290,11 @@ Wrap them in a function and reuse it where it is possible. Sometimes, it 's hard
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <ul>
-<li>There are two more that could help by using <code>Polymorphism</code> and <code>Factory pattern</code>. I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</li>
+<li><code>Polymorphism</code> + <code>Factory pattern</code></li>
 </ul>
 
+
+<p>I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</p>
 ]]></content>
   </entry>
   

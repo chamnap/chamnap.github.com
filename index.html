@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="In the new project, we have built recently at Yoolk. I really enjoyed a lot of refactoring the app. There are things which always bother me a lot is &hellip;">
+  <meta name="description" content="Last week, we decided to remove sunspot gem from this new version App. I have gone through the ActiveRelation Walkthrough episode from RailsCasts, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,6 +82,188 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/06/02/lazy-loaded-object/">Lazy-loaded Object</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-02T23:26:00+07:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/06/02/lazy-loaded-object/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Last week, we decided to remove <code>sunspot</code> gem from this new version App.</p>
+
+<p>I have gone through the <strong>ActiveRelation Walkthrough</strong> episode from RailsCasts, and now I have a chance to do something similar. I want the search response object lazy to load activerecord objects. I don&#8217;t want to call <code>#results</code> method the same as <code>sunspot</code> does. Actually, it&#8217;s a nice trick and simple to do it.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Solr</span><span class="o">::</span><span class="no">Response</span>
+</span><span class='line'>  <span class="kp">attr_reader</span> <span class="ss">:response</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">clazz</span><span class="p">,</span> <span class="n">raw_response</span><span class="p">)</span>
+</span><span class='line'>      <span class="vi">@clazz</span>    <span class="o">=</span> <span class="n">clazz</span>
+</span><span class='line'>      <span class="vi">@response</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">raw_response</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">docs</span>
+</span><span class='line'>      <span class="n">response</span><span class="o">[</span><span class="s2">&quot;response&quot;</span><span class="o">][</span><span class="s2">&quot;docs&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">total</span>
+</span><span class='line'>      <span class="n">response</span><span class="o">[</span><span class="s2">&quot;response&quot;</span><span class="o">][</span><span class="s2">&quot;numFound&quot;</span><span class="o">].</span><span class="n">to_i</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">inspect</span>
+</span><span class='line'>    <span class="nb">to_a</span><span class="o">.</span><span class="n">inspect</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_a</span>
+</span><span class='line'>    <span class="k">return</span> <span class="vi">@records</span> <span class="k">if</span> <span class="n">loaded?</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">uuids</span>    <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">collect</span> <span class="p">{</span> <span class="o">|</span><span class="n">doc</span><span class="o">|</span> <span class="n">doc</span><span class="o">[</span><span class="s1">&#39;uuid&#39;</span><span class="o">]</span> <span class="p">}</span>
+</span><span class='line'>    <span class="vi">@records</span> <span class="o">=</span> <span class="n">load_objects</span><span class="p">(</span><span class="vi">@clazz</span><span class="p">,</span> <span class="n">uuids</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">loaded?</span>
+</span><span class='line'>    <span class="n">defined?</span><span class="p">(</span><span class="vi">@records</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">load_objects</span><span class="p">(</span><span class="n">clazz</span><span class="p">,</span> <span class="n">uuids</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">[]</span> <span class="k">if</span> <span class="n">uuids</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">records</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="n">unscoped</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:uuid</span> <span class="o">=&gt;</span> <span class="n">uuids</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">[]</span> <span class="k">if</span> <span class="n">records</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">uuids</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="n">uuid</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="n">records</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">record</span><span class="o">|</span> <span class="n">record</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">uuid</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">to_a</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After sending the request to Solr, it will initialize the response object by passing solr response and the class to retreive the results.</p>
+
+<p>The trick is to overwrite <code>#inspect</code> method so that when in the console, you will see the objects back. <code>#to_a</code> method is responsible loading the objects.</p>
+
+<p>The question is that when to load? I want the caller be able to iterate through the collection by using standard Ruby enumerable methods such as <code>each</code>, <code>inject</code>, &#8230;&#8230; My solution is to overwrite <code>method_missing</code> by sending any undefined methods to <code>#to_a</code> method.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@listings</span> <span class="o">=</span> <span class="no">Solr</span><span class="o">::</span><span class="no">Listing</span><span class="o">.</span><span class="n">text_search</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">,</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span><span class='line'><span class="vi">@listings</span><span class="o">.</span><span class="n">class</span>     <span class="c1">#Solr::Response</span>
+</span><span class='line'><span class="vi">@listings</span><span class="o">.</span><span class="n">total</span>     <span class="c1">#1367, total founds from solr</span>
+</span><span class='line'><span class="vi">@listings</span><span class="o">.</span><span class="n">count</span>     <span class="c1">#20, +count+ method on array</span>
+</span><span class='line'><span class="vi">@listings</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>        <span class="c1">#Listing class</span>
+</span><span class='line'><span class="vi">@listings</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Everything works fine except when it renders the view. It shows this error <code>[....] is not an ActiveModel-compatible object that returns a valid partial path.</code></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;%=</span> <span class="n">render</span> <span class="vi">@listings</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After digging through google, it simply means it doesn&#8217;t know the partial path to render because it is my new object. Therefore, I just one more method in <code>Solr::Response</code> class. It&#8217;s pretty simple, actually. <code>ActiveModel</code> does the same thing, <a href="http://apidock.com/rails/v3.2.3/ActiveModel/Conversion/to_partial_path">http://apidock.com/rails/v3.2.3/ActiveModel/Conversion/to_partial_path</a>.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">to_partial_path</span>
+</span><span class='line'>    <span class="vi">@clazz</span><span class="o">.</span><span class="n">_to_partial_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/27/reduce-if-else-statements/">Reduce If/Else Statements</a></h1>
     
     
@@ -116,10 +298,11 @@
 <p>It looks simple to experienced <code>Rails</code> developers, but it&#8217;s useful for novice people. Here are some tips to reduce <code>if/else</code> statements:</p>
 
 <ul>
-<li>use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method
-As the method name, it&#8217;s a cleaner way to get/create objects without <code>if/else</code>.</li>
+<li>Use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method</li>
 </ul>
 
+
+<p>As the method name, it&#8217;s a cleaner way to get/create objects without <code>if/else</code>.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -137,10 +320,11 @@ As the method name, it&#8217;s a cleaner way to get/create objects without <code
 <p>Be sure to check more about these methods if you didn&#8217;t know on <a href="http://api.rubyonrails.org/classes/ActiveRecord/Base.html">http://api.rubyonrails.org/classes/ActiveRecord/Base.html</a> in the <strong>Dynamic attribute-based finders</strong> section.</p>
 
 <ul>
-<li>use <code>try</code> for possible nil object
-Invoke <code>try</code> for object that could be nil. It&#8217;s more convienient than doing a check by yourself.</li>
+<li>Use <code>try</code> for possible nil object</li>
 </ul>
 
+
+<p>Invoke <code>try</code> for object that could be nil. It&#8217;s more convienient than doing a check by yourself.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -176,10 +360,11 @@ Invoke <code>try</code> for object that could be nil. It&#8217;s more convienien
 <p>Check this document, <a href="http://api.rubyonrails.org/classes/Object.html#method-i-try">http://api.rubyonrails.org/classes/Object.html#method-i-try</a> as well.</p>
 
 <ul>
-<li>use <code>||</code> operator + <code>presence</code> method
-The <code>||</code> is a common idiom in Ruby. However, it doesn&#8217;t work well if the first operand is empty string. The <code>presence</code> method will return nil instead of &#8220;&#8221; if the object is `blank?&#8220;, otherwise it return the actual object back.</li>
+<li>Use <code>||</code> operator + <code>presence</code> method</li>
 </ul>
 
+
+<p>The <code>||</code> is a common idiom in Ruby. However, it doesn&#8217;t work well if the first operand is empty string. The <code>presence</code> method will return nil instead of &#8220;&#8221; if the object is `blank?&#8220;, otherwise it return the actual object back.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="ss">:host</span><span class="o">].</span><span class="n">presence</span> <span class="o">||</span> <span class="s1">&#39;localhost&#39;</span>
@@ -187,10 +372,11 @@ The <code>||</code> is a common idiom in Ruby. However, it doesn&#8217;t work we
 
 
 <ul>
-<li>use default value
-Use default value so that you don&#8217;t else clause.</li>
+<li>Use default value</li>
 </ul>
 
+
+<p>Use default value so that you don&#8217;t else clause.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -202,10 +388,11 @@ Use default value so that you don&#8217;t else clause.</li>
 
 
 <ul>
-<li>keep the if/else logic in fewer places
-Wrap them in a function and reuse it where it is possible. Sometimes, it &#8216;s hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</li>
+<li>Keep the if/else logic in fewer places</li>
 </ul>
 
+
+<p>Wrap them in a function and reuse it where it is possible. Sometimes, it &#8216;s hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</p>
 
 <p>If you feel you are doing too much <code>if/else</code>, go back one step why you are doing that way. Try to use the correct objects that fit to your scenarios.</p>
 
@@ -330,9 +517,11 @@ Wrap them in a function and reuse it where it is possible. Sometimes, it &#8216;
 
 
 <ul>
-<li>There are two more that could help by using <code>Polymorphism</code> and <code>Factory pattern</code>. I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</li>
+<li><code>Polymorphism</code> + <code>Factory pattern</code></li>
 </ul>
 
+
+<p>I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</p>
 </div>
   
   
@@ -928,47 +1117,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/08/17/ruby-object-model-presentation/">Ruby Object Model Presentation</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-08-17T10:13:00+07:00" pubdate data-updated="true">Aug 17<span>th</span>, 2010</time>
-        
-         | <a href="/blog/2010/08/17/ruby-object-model-presentation/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I conduct a training on Ruby Object Model this week. I start talking about Ruby from scratch then the object model of Ruby. At the same time, I discussed about JavaScript object model.</p>
-
-<div style="width:425px" id="__ss_4978263"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/ruby-object-model-4978263" title="Ruby object model" target="_blank">Ruby object model</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4978263" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -992,6 +1140,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/06/02/lazy-loaded-object/">Lazy-loaded object</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/27/reduce-if-else-statements/">Reduce If/Else Statements</a>
       </li>
     
@@ -1005,10 +1157,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
       </li>
     
   </ul>
