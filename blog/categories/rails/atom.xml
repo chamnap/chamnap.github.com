@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-02T15:49:56+07:00</updated>
+  <updated>2012-06-02T15:53:32+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Reduce If/Else Statements]]></title>
-    <link href="http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements/"/>
-    <updated>2012-05-24T23:35:00+07:00</updated>
-    <id>http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements</id>
+    <link href="http://chamnap.github.com/blog/2012/05/27/reduce-if-else-statements/"/>
+    <updated>2012-05-27T23:35:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/05/27/reduce-if-else-statements</id>
     <content type="html"><![CDATA[<p>In the new project, we have built recently at <code>Yoolk</code>. I really enjoyed a lot of refactoring the app.</p>
 
 <p>There are things which always bother me a lot is the <code>if/else</code> statements. I see them all the time. In my views, <code>if/else</code> should be used at the low level of coding. We should not use them too much because it doesn't make the code readable.</p>
