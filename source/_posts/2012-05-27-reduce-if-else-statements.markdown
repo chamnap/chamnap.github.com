@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Reduce If/Else Statements"
-date: 2012-05-24 23:35
+date: 2012-05-27 23:35
 comments: true
 categories: [ruby, rails, refactoring]
 ---
