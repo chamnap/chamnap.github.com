@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Reduce If/Else Statements - Chamnap Chhorn</title>
+  <meta name="author" content="Chamnap Chhorn">
+
+  
+  <meta name="description" content="In the new project, we have built recently at Yoolk. I really enjoyed a lot of refactoring the app. There are things which always bother me a lot is &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Chamnap Chhorn" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-31866777-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Chamnap Chhorn</a></h1>
+  
+    <h2>JavaScript and Ruby Developer</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:chamnap.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Reduce If/Else Statements</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T23:35:00+07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In the new project, we have built recently at <code>Yoolk</code>. I really enjoyed a lot of refactoring the app.</p>
+
+<p>There are things which always bother me a lot is the <code>if/else</code> statements. I see them all the time. In my views, <code>if/else</code> should be used at the low level of coding. We should not use them too much because it doesn&#8217;t make the code readable.</p>
+
+<p>I remembered vorleak, my coworker, and I are moderators in a study group long time ago about <strong>Principles of Refacoring</strong>. Two principles that really inspires me quite alot: <strong>less code == less bugs</strong> and <strong>write code for human, not for machine</strong>.</p>
+
+<p>It looks simple to experienced <code>Rails</code> developers, but it&#8217;s useful for novice people. Here are some tips to reduce <code>if/else</code> statements:</p>
+
+<ul>
+<li>use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method
+As the method name, it&#8217;s a cleaner way to get/create objects without <code>if/else</code>.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># A shorter version</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_initialize_by</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># A longer version with if statement</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_user_name</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:user_name</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Be sure to check more about these methods if you didn&#8217;t know on <a href="http://api.rubyonrails.org/classes/ActiveRecord/Base.html">http://api.rubyonrails.org/classes/ActiveRecord/Base.html</a> in the <strong>Dynamic attribute-based finders</strong> section.</p>
+
+<ul>
+<li>use <code>try</code> for possible nil object
+Invoke <code>try</code> for object that could be nil. It&#8217;s more convienient than doing a check by yourself.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Without try</span>
+</span><span class='line'><span class="vi">@person</span> <span class="p">?</span> <span class="vi">@person</span><span class="o">.</span><span class="n">name</span> <span class="p">:</span> <span class="kp">nil</span>
+</span><span class='line'><span class="c1">#With try</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, don&#8217;t confuse with the below situation.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Don&#39;t invoke try with non-existed methods</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span><span class="p">(</span><span class="ss">:abcde</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#Call respond_to instead</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:abcde</span><span class="p">)</span> <span class="p">?</span> <span class="n">t</span><span class="o">.</span><span class="n">abcde</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Try</code> also be called with block as well so that you can call multiple methods in a scope of try.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span> <span class="p">{</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">p</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="nb">p</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Check this document, <a href="http://api.rubyonrails.org/classes/Object.html#method-i-try">http://api.rubyonrails.org/classes/Object.html#method-i-try</a> as well.</p>
+
+<ul>
+<li>use <code>||</code> operator + <code>presence</code> method
+The <code>||</code> is a common idiom in Ruby. However, it doesn&#8217;t work well if the first operand is empty string. The <code>presence</code> method will return nil instead of &#8220;&#8221; if the object is `blank?&#8220;, otherwise it return the actual object back.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="ss">:host</span><span class="o">].</span><span class="n">presence</span> <span class="o">||</span> <span class="s1">&#39;localhost&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>use default value
+Use default value so that you don&#8217;t else clause.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># should do this way, it&#39;s more readable.</span>
+</span><span class='line'><span class="n">subscription</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
+</span><span class='line'><span class="n">subscription</span> <span class="o">=</span> <span class="s1">&#39;premium&#39;</span> <span class="k">if</span> <span class="n">condition</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>keep the if/else logic in fewer places
+Wrap them in a function and reuse it where it is possible. Sometimes, it &#8216;s hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</li>
+</ul>
+
+
+<p>If you feel you are doing too much <code>if/else</code>, go back one step why you are doing that way. Try to use the correct objects that fit to your scenarios.</p>
+
+<p>Here is my coworker&#8217;s version generating the last 12 months stats. He manipulates the <code>string</code> object.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">last_twelve_months</span>
+</span><span class='line'>  <span class="n">default_value</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;views&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;website_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;email_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;billboard_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;sponsor_views&quot;</span> <span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span>
+</span><span class='line'>  <span class="n">current_month</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">month</span>
+</span><span class='line'>  <span class="n">twelve_months</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>  <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">month</span> <span class="o">=</span> <span class="n">current_month</span> <span class="o">-</span> <span class="n">i</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">month</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">elsif</span> <span class="n">month</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">current_month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">month</span> <span class="o">=</span> <span class="n">month</span> <span class="o">+</span> <span class="mi">13</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="p">(</span><span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">twelve_months</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">]</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">yearmonths</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">].</span><span class="n">blank?</span> <span class="p">?</span> <span class="n">default_value</span> <span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">yearmonths</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Hash</span><span class="o">[</span><span class="n">twelve_months</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_i</span><span class="p">}</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">resolve_language</span>
+</span><span class='line'>  <span class="n">language_uuid</span> <span class="o">=</span> <span class="n">cookies</span><span class="o">[</span><span class="s2">&quot;language_uuid&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="vi">@active_language</span> <span class="o">=</span> <span class="k">if</span> <span class="n">language_uuid</span> <span class="ow">and</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:uuid</span><span class="p">)</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="vi">@portal</span><span class="o">.</span><span class="n">language</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="vi">@active_language</span><span class="o">.</span><span class="n">two_code</span>
+</span><span class='line'>  <span class="vi">@inactive_languages</span> <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span><span class="o">|</span><span class="n">language</span><span class="o">|</span> <span class="n">language</span><span class="o">.</span><span class="n">uuid</span> <span class="o">!=</span> <span class="vi">@active_language</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, it&#8217;s my version, much shorter and less code.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">last_year</span>
+</span><span class='line'>  <span class="k">return</span> <span class="vi">@last_year</span> <span class="k">if</span> <span class="vi">@last_year</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">defaults</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="mi">12</span><span class="o">.</span><span class="n">downto</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">date</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">months</span><span class="o">.</span><span class="n">ago</span>
+</span><span class='line'>    <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">%02d&quot;</span> <span class="o">%</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="n">defaults</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;views&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;website_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;email_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;billboard_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">existings</span> <span class="o">=</span> <span class="n">yearmonths</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">defaults</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="vi">@last_year</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">existings</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">resolve_language</span>
+</span><span class='line'>  <span class="n">language_uuid</span> <span class="o">=</span> <span class="n">cookies</span><span class="o">[</span><span class="s2">&quot;language_uuid&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="vi">@language</span>     <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">has_language?</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@language</span>   <span class="o">||=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">default_language</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="vi">@language</span><span class="o">.</span><span class="n">two_code</span>
+</span><span class='line'>  <span class="vi">@inactive_languages</span> <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages_except_by</span><span class="p">(</span><span class="vi">@language</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>There are two more that could help by using <code>Polymorphism</code> and <code>Factory pattern</code>. I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Chamnap Chhorn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T23:35:00+07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/refactoring/'>refactoring</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/05/24/unit-test-or-integration-test/" title="Previous Post: Unit Test or Integration Test?">&laquo; Unit Test or Integration Test?</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/170025/chamnap">
+  <img src="http://stackoverflow.com/users/flair/170025.png" width="208" height="58" alt="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+  </a>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/05/24/reduce-if-slash-else-statements/">Reduce If/Else Statements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/chamnap">@chamnap</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'chamnap',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("chamnap", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/chamnap" class="twitter-follow-button" data-show-count="false">Follow @chamnap</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Chamnap Chhorn -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'chamnap';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements/';
+        var disqus_url = 'http://chamnap.github.com/blog/2012/05/24/reduce-if-slash-else-statements/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

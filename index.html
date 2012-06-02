@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="I were often asked when to do unit test or integration test, so I decided to write this blog post to clarify: Unit Test By definition it doesn&#8217; &hellip;">
+  <meta name="description" content="In the new project, we have built recently at Yoolk. I really enjoyed a lot of refactoring the app. There are things which always bother me a lot is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,269 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/24/reduce-if-slash-else-statements/">Reduce If/Else Statements</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T23:35:00+07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/05/24/reduce-if-slash-else-statements/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the new project, we have built recently at <code>Yoolk</code>. I really enjoyed a lot of refactoring the app.</p>
+
+<p>There are things which always bother me a lot is the <code>if/else</code> statements. I see them all the time. In my views, <code>if/else</code> should be used at the low level of coding. We should not use them too much because it doesn&#8217;t make the code readable.</p>
+
+<p>I remembered vorleak, my coworker, and I are moderators in a study group long time ago about <strong>Principles of Refacoring</strong>. Two principles that really inspires me quite alot: <strong>less code == less bugs</strong> and <strong>write code for human, not for machine</strong>.</p>
+
+<p>It looks simple to experienced <code>Rails</code> developers, but it&#8217;s useful for novice people. Here are some tips to reduce <code>if/else</code> statements:</p>
+
+<ul>
+<li>use <code>find_or_initialize_by</code>, <code>find_or_create_by</code> method
+As the method name, it&#8217;s a cleaner way to get/create objects without <code>if/else</code>.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># A shorter version</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_initialize_by</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># A longer version with if statement</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_user_name</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:user_name</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user_name</span><span class="o">]</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Be sure to check more about these methods if you didn&#8217;t know on <a href="http://api.rubyonrails.org/classes/ActiveRecord/Base.html">http://api.rubyonrails.org/classes/ActiveRecord/Base.html</a> in the <strong>Dynamic attribute-based finders</strong> section.</p>
+
+<ul>
+<li>use <code>try</code> for possible nil object
+Invoke <code>try</code> for object that could be nil. It&#8217;s more convienient than doing a check by yourself.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Without try</span>
+</span><span class='line'><span class="vi">@person</span> <span class="p">?</span> <span class="vi">@person</span><span class="o">.</span><span class="n">name</span> <span class="p">:</span> <span class="kp">nil</span>
+</span><span class='line'><span class="c1">#With try</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, don&#8217;t confuse with the below situation.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#Don&#39;t invoke try with non-existed methods</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span><span class="p">(</span><span class="ss">:abcde</span><span class="p">)</span>
+</span><span class='line'><span class="c1">#Call respond_to instead</span>
+</span><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:abcde</span><span class="p">)</span> <span class="p">?</span> <span class="n">t</span><span class="o">.</span><span class="n">abcde</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Try</code> also be called with block as well so that you can call multiple methods in a scope of try.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@person</span><span class="o">.</span><span class="n">try</span> <span class="p">{</span> <span class="o">|</span><span class="nb">p</span><span class="o">|</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">p</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="nb">p</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Check this document, <a href="http://api.rubyonrails.org/classes/Object.html#method-i-try">http://api.rubyonrails.org/classes/Object.html#method-i-try</a> as well.</p>
+
+<ul>
+<li>use <code>||</code> operator + <code>presence</code> method
+The <code>||</code> is a common idiom in Ruby. However, it doesn&#8217;t work well if the first operand is empty string. The <code>presence</code> method will return nil instead of &#8220;&#8221; if the object is `blank?&#8220;, otherwise it return the actual object back.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="ss">:host</span><span class="o">].</span><span class="n">presence</span> <span class="o">||</span> <span class="s1">&#39;localhost&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>use default value
+Use default value so that you don&#8217;t else clause.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># should do this way, it&#39;s more readable.</span>
+</span><span class='line'><span class="n">subscription</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
+</span><span class='line'><span class="n">subscription</span> <span class="o">=</span> <span class="s1">&#39;premium&#39;</span> <span class="k">if</span> <span class="n">condition</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>keep the if/else logic in fewer places
+Wrap them in a function and reuse it where it is possible. Sometimes, it &#8216;s hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.</li>
+</ul>
+
+
+<p>If you feel you are doing too much <code>if/else</code>, go back one step why you are doing that way. Try to use the correct objects that fit to your scenarios.</p>
+
+<p>Here is my coworker&#8217;s version generating the last 12 months stats. He manipulates the <code>string</code> object.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">last_twelve_months</span>
+</span><span class='line'>  <span class="n">default_value</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;views&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;website_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;email_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;billboard_clicks&quot;</span><span class="o">=&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;sponsor_views&quot;</span> <span class="o">=&gt;</span><span class="mi">0</span><span class="p">}</span>
+</span><span class='line'>  <span class="n">current_month</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">month</span>
+</span><span class='line'>  <span class="n">twelve_months</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>  <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">month</span> <span class="o">=</span> <span class="n">current_month</span> <span class="o">-</span> <span class="n">i</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">month</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">elsif</span> <span class="n">month</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">current_month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">month</span> <span class="o">=</span> <span class="n">month</span> <span class="o">+</span> <span class="mi">13</span>
+</span><span class='line'>      <span class="n">yearmonth</span> <span class="o">=</span> <span class="p">(</span><span class="no">Date</span><span class="o">.</span><span class="n">yesterday</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;%02d&quot;</span> <span class="o">%</span> <span class="n">month</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="n">twelve_months</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">]</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">yearmonths</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">].</span><span class="n">blank?</span> <span class="p">?</span> <span class="n">default_value</span> <span class="p">:</span> <span class="nb">self</span><span class="o">.</span><span class="n">yearmonths</span><span class="o">[</span><span class="n">yearmonth</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Hash</span><span class="o">[</span><span class="n">twelve_months</span><span class="o">.</span><span class="n">sort_by</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span><span class="o">.</span><span class="n">to_i</span><span class="p">}</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">resolve_language</span>
+</span><span class='line'>  <span class="n">language_uuid</span> <span class="o">=</span> <span class="n">cookies</span><span class="o">[</span><span class="s2">&quot;language_uuid&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="vi">@active_language</span> <span class="o">=</span> <span class="k">if</span> <span class="n">language_uuid</span> <span class="ow">and</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:uuid</span><span class="p">)</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="vi">@portal</span><span class="o">.</span><span class="n">language</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="vi">@active_language</span><span class="o">.</span><span class="n">two_code</span>
+</span><span class='line'>  <span class="vi">@inactive_languages</span> <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span><span class="o">|</span><span class="n">language</span><span class="o">|</span> <span class="n">language</span><span class="o">.</span><span class="n">uuid</span> <span class="o">!=</span> <span class="vi">@active_language</span><span class="o">.</span><span class="n">uuid</span><span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, it&#8217;s my version, much shorter and less code.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">last_year</span>
+</span><span class='line'>  <span class="k">return</span> <span class="vi">@last_year</span> <span class="k">if</span> <span class="vi">@last_year</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">defaults</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="mi">12</span><span class="o">.</span><span class="n">downto</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">date</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">months</span><span class="o">.</span><span class="n">ago</span>
+</span><span class='line'>    <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">%02d&quot;</span> <span class="o">%</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="n">defaults</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;views&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;website_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;email_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;billboard_clicks&quot;</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">existings</span> <span class="o">=</span> <span class="n">yearmonths</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">defaults</span><span class="o">.</span><span class="n">key?</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="vi">@last_year</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">existings</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">resolve_language</span>
+</span><span class='line'>  <span class="n">language_uuid</span> <span class="o">=</span> <span class="n">cookies</span><span class="o">[</span><span class="s2">&quot;language_uuid&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="vi">@language</span>     <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">has_language?</span><span class="p">(</span><span class="n">language_uuid</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@language</span>   <span class="o">||=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">default_language</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="vi">@language</span><span class="o">.</span><span class="n">two_code</span>
+</span><span class='line'>  <span class="vi">@inactive_languages</span> <span class="o">=</span> <span class="vi">@portal</span><span class="o">.</span><span class="n">languages_except_by</span><span class="p">(</span><span class="vi">@language</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>There are two more that could help by using <code>Polymorphism</code> and <code>Factory pattern</code>. I recommend you read the book from <strong>Martin Fowler, Improving the Design of Existing Code</strong>.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -706,47 +969,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/07/16/rest-and-rails-presentation/">REST and RAILS Presentation</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-07-16T21:04:00+07:00" pubdate data-updated="true">Jul 16<span>th</span>, 2010</time>
-        
-         | <a href="/blog/2010/07/16/rest-and-rails-presentation/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I made a presentation to <code>InSTEDD</code> guys recently on <code>REST</code>. This slide cover most parts related to <code>REST</code> and <code>RAILS</code>. Hope it could help.</p>
-
-<div style="width:425px" id="__ss_4758443"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/rest-web-services-in-rails" title="Rest and Rails" target="_blank">Rest and Rails</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/4758443" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -770,6 +992,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/05/24/reduce-if-slash-else-statements/">Reduce If/Else Statements</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
       </li>
     
@@ -783,10 +1009,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/">The benefits of addressability in REST web service</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/19/how-useful-is-monit/">How useful is monit?</a>
       </li>
     
   </ul>

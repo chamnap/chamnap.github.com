@@ -4,7 +4,7 @@
   <title><![CDATA[Category: presentation | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/presentation/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-02T00:07:14+07:00</updated>
+  <updated>2012-06-02T15:49:56+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -62,13 +62,13 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[JavaScript in Object-Oriented Way Presentation]]></title>
-    <link href="http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation/"/>
-    <updated>2009-05-13T10:59:00+07:00</updated>
-    <id>http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation</id>
-    <content type="html"><![CDATA[<p>I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand really well. This slide covers many advanced features of JavaScript: Function, Object, Closure,.... Some other points I have pointed out in this slide are about how to make private variable, public variable, static variable, privileged variable and how to do inheritance. I took about 20 different sources as my references and three famous authors. It took me two weeks, at every weekend, to finish this slide.</p>
+    <title type="html"><![CDATA[Principles in Refactoring]]></title>
+    <link href="http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/"/>
+    <updated>2009-09-05T11:33:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring</id>
+    <content type="html"><![CDATA[<p>This week, in my office we did a study group, and vorleak and I were moderators in that session. We studied the book from <strong>Refactoring the Existing Code by Martin Fowler</strong>. Here is the slide I prepared.</p>
 
-<div style="width:425px" id="__ss_1426608"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/javascript-in-objectoriented-way" title="JavaScript in Object-Oriented Way" target="_blank">JavaScript in Object-Oriented Way</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1426608" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
+<div style="width:425px" id="__ss_1961578"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/principles-in-refactoring" title="Principles in Refactoring" target="_blank">Principles in Refactoring</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1961578" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
 
 ]]></content>
   </entry>

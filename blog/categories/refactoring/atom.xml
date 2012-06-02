@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: rails | Chamnap Chhorn]]></title>
-  <link href="http://chamnap.github.com/blog/categories/rails/atom.xml" rel="self"/>
+  <title><![CDATA[Category: refactoring | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/refactoring/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
   <updated>2012-06-02T15:49:56+07:00</updated>
   <id>http://chamnap.github.com/</id>
@@ -292,209 +292,14 @@ Wrap them in a function and reuse it where it is possible. Sometimes, it 's hard
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Unit Test or Integration Test?]]></title>
-    <link href="http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test/"/>
-    <updated>2012-05-24T00:39:00+07:00</updated>
-    <id>http://chamnap.github.com/blog/2012/05/24/unit-test-or-integration-test</id>
-    <content type="html"><![CDATA[<p>I were often asked when to do unit test or integration test, so I decided to write this blog post to clarify:</p>
+    <title type="html"><![CDATA[Principles in Refactoring]]></title>
+    <link href="http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/"/>
+    <updated>2009-09-05T11:33:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring</id>
+    <content type="html"><![CDATA[<p>This week, in my office we did a study group, and vorleak and I were moderators in that session. We studied the book from <strong>Refactoring the Existing Code by Martin Fowler</strong>. Here is the slide I prepared.</p>
 
-<h2>Unit Test</h2>
+<div style="width:425px" id="__ss_1961578"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/principles-in-refactoring" title="Principles in Refactoring" target="_blank">Principles in Refactoring</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1961578" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
 
-<ul>
-<li><p>By definition</p>
-
-<ul>
-<li>it doesn't talk to database</li>
-<li>it doesn't communicate across the network</li>
-<li>it doesn't touch the file system</li>
-</ul>
-</li>
-<li>Test a single module in isolation. We often use <code>stub</code> or <code>mock</code> its dependencies. When its tests fail, we know exactly because of itself.</li>
-<li>A <code>stub</code> object is a <code>fake object</code> and not part of the test. It can be replaced by any other objects.</li>
-<li>A <code>mock</code> object is also a <code>fake object</code>. A <code>mock</code> object contains behavior and it is part of what we want to test (collaborator).</li>
-</ul>
-
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="no">Statement</span> <span class="k">do</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;it &quot;logs a message on generate()&quot; do</span>
-</span><span class='line'><span class="sr">  customer = stub(&#39;customer&#39;)</span>
-</span><span class='line'><span class="sr">  customer.stub(:name).and_return(&#39;Aslak&#39;)</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">  logger   = mock(&#39;logger&#39;)</span>
-</span><span class='line'><span class="sr">  statement = Statement.new(customer, logger)</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">  logger.should_receive(:log).with(/</span><span class="no">Statement</span> <span class="n">generated</span> <span class="k">for</span> <span class="no">Aslak</span><span class="o">/</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">statement</span><span class="o">.</span><span class="n">generate</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<ul>
-<li>The above test would fail if the <code>logger</code> doesn't call <code>#log</code> with the specified parameter. customer is simply a fake object with no behavior in the test, and it cannot make the test fail. Remember this test is about the logging a message.</li>
-<li>Kind of <code>White-box testing</code>. It tests internal workings of an application. You dictate the software that it should do this and do that.</li>
-<li>Generally, <code>private methods</code> are already tested indirectly by public methods. You should not test it explicitly. However, if you feel that private method is crucious to make your class work correctly, consider give it a better name and promote it as public method.</li>
-<li>Unit tests alone are not enough to make sure the application work correctly.</li>
-<li>Much faster than integration test.</li>
-<li>In Rails, there are functional tests: <code>model spec</code>, <code>controller spec</code> (it touches database).</li>
-</ul>
-
-
-<h2>Integration Test</h2>
-
-<ul>
-<li>It tests interaction between components to make sure these components work nicely with each other.</li>
-<li>Kind of <code>Acceptance Testing</code>, it focuses on what the user see and how the user interacts with the system. It can be called <code>Black-box testing</code> where we don't care how it is done. We care only the outcome.</li>
-<li>Much slower than unit test.</li>
-<li>In Rails, it would be request spec and capybara.</li>
-</ul>
-
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;POST /tasks&quot;</span> <span class="k">do</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;it &quot;creates task&quot; do</span>
-</span><span class='line'><span class="sr">  visit tasks_path</span>
-</span><span class='line'><span class="sr">  fill_in &quot;Name&quot;, :with =&amp;gt; &quot;washing clothes&quot;</span>
-</span><span class='line'><span class="sr">  click_button &quot;Add&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">  page.should have_content(&quot;Successfully added task.&quot;)</span>
-</span><span class='line'><span class="sr">  page.should have_content(&quot;washing clothes&quot;)</span>
-</span><span class='line'><span class="sr">end</span>
-</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<ul>
-<li>The above test send the actual request to <code>/tasks</code>, fill out the form, and submit. It expects the content we filled out to be display in the page. If it's a unit test (in this case, functional test aka. controller spec), we would test it differently. We won't send the actual request, and we would assert it should receive <code>#save</code> on a <code>@task</code> object.</li>
-<li>It's better than unit test because it mimics real user behaviors and it tests the entire stack of the application.</li>
-<li>Should we still write controller spec? The answer is <code>yes</code> for sad path and leave the happy path in the integration tests. Doing this make your tests a bit faster. <a href="http://solnic.eu/2012/02/02/yes-you-should-write-controller-tests.html">Check this blog</a></li>
-</ul>
-
-
-<h2>Where to get started?</h2>
-
-<ul>
-<li>Should we write unit test first or integration test first? If you haven't watched <a href="http://railscasts.com/episodes/275-how-i-test">this episode</a> from <code>RailsCasts</code>, watch it. He followed the outside-in development, starting from request spec, controller spec, and model spec.</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Remove focus options on your spec examples]]></title>
-    <link href="http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/"/>
-    <updated>2012-05-17T00:39:00+07:00</updated>
-    <id>http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples</id>
-    <content type="html"><![CDATA[<p>When using rspec in my rails projects, I often add <code>:focus =&gt; true</code> on <code>describe/context/it block</code> and let <code>guard</code> running the tests on those new specs. I need to remove it from various places to run the test fully. It's a bit annoying, actually. Therefore, I decide to write a ruby script just to do this thing:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;!/us</span><span class="n">r</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">env</span> <span class="n">ruby</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;founds = &lt;code&gt;grep -n -r &quot;:focus =&amp;gt; true&quot; spec/</span><span class="o">&lt;</span><span class="sr">/code&gt;.split(&quot;\n&quot;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">path</span><span class="p">;</span><span class="n">line_number</span><span class="p">;</span><span class="n">matched_content</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;founds.each do |string|</span>
-</span><span class='line'><span class="sr">  array = string.split(&quot;:&quot;)</span>
-</span><span class='line'><span class="sr">  path = array[0]</span>
-</span><span class='line'><span class="sr">  line_number = array[1]</span>
-</span><span class='line'><span class="sr">  matched_line = array[2..-1].join(&#39;:&#39;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">if</span> <span class="n">matched_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/&lt;sup&gt;\s&lt;em&gt;(describe|context|it).+(:focus\s&lt;/em</span><span class="o">&gt;</span><span class="sc">?=</span><span class="o">&gt;</span><span class="p">\</span><span class="n">s</span><span class="o">*</span><span class="p">?</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/sup&gt; do$)/</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;puts &quot;\e[0;32m</span><span class="si">#{</span><span class="n">string</span><span class="si">}</span><span class="sr">\e[0m&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">system &quot;sed -i &#39;</span><span class="si">#{</span><span class="n">line_number</span><span class="si">}</span><span class="sr"> s/</span><span class="p">,\</span><span class="n">s</span><span class="o">*</span><span class="ss">:focus</span><span class="p">\</span><span class="n">s</span><span class="o">*=&amp;</span><span class="n">gt</span><span class="p">;\</span><span class="n">s</span><span class="o">*</span><span class="kp">true</span><span class="o">//</span><span class="err">&#39;</span> <span class="c1">#{path}&quot;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>What this code does is checking all the spec directory to remove them on every <code>describe/context/it block</code>. You would see I use very strict regular expression just to ensure I'm doing the write thing. I placed this script under script directory of my rails app. You may write this code better, but this is how i do it. I also create a rake script and add to hg before commit hook.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">namespace</span> <span class="ss">:spec</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;remove :focus =&gt; true in all specs&quot;</span>
-</span><span class='line'>  <span class="n">task</span> <span class="ss">:remove_focus</span> <span class="k">do</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;require_relative &#39;../</span><span class="o">.</span><span class="n">.</span><span class="o">/</span><span class="n">script</span><span class="o">/</span><span class="n">remove_focus</span><span class="err">&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="n">hooks</span><span class="o">]</span>
-</span><span class='line'><span class="n">precommit</span> <span class="o">=</span> <span class="n">script</span><span class="o">/</span><span class="n">remove_focus</span><span class="o">.</span><span class="n">rb</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
