@@ -13,7 +13,8 @@ I remembered vorleak, my coworker, and I are moderators in a study group long ti
 
 It looks simple to experienced `Rails` developers, but it's useful for novice people. Here are some tips to reduce `if/else` statements:
 
-- use `find_or_initialize_by`, `find_or_create_by` method
+- Use `find_or_initialize_by`, `find_or_create_by` method
+
 As the method name, it's a cleaner way to get/create objects without `if/else`.
 
 {% codeblock lang:ruby %}
@@ -26,7 +27,8 @@ user = User.new(:user_name => params[:user_name]) if user.nil?
 
 Be sure to check more about these methods if you didn't know on [http://api.rubyonrails.org/classes/ActiveRecord/Base.html](http://api.rubyonrails.org/classes/ActiveRecord/Base.html) in the **Dynamic attribute-based finders** section.
 
-- use `try` for possible nil object
+- Use `try` for possible nil object
+
 Invoke `try` for object that could be nil. It's more convienient than doing a check by yourself.
 
 {% codeblock lang:ruby %}
@@ -53,14 +55,16 @@ However, don't confuse with the below situation.
 
 Check this document, [http://api.rubyonrails.org/classes/Object.html#method-i-try](http://api.rubyonrails.org/classes/Object.html#method-i-try) as well.
 
-- use `||` operator + `presence` method
+- Use `||` operator + `presence` method
+
 The `||` is a common idiom in Ruby. However, it doesn't work well if the first operand is empty string. The `presence` method will return nil instead of "" if the object is `blank?``, otherwise it return the actual object back.
 
 {% codeblock lang:ruby %}
 host = config[:host].presence || 'localhost'
 {% endcodeblock %}
 
-- use default value
+- Use default value
+
 Use default value so that you don't else clause.
 
 {% codeblock lang:ruby %}
@@ -69,7 +73,8 @@ subscription = 'normal'
 subscription = 'premium' if condition
 {% endcodeblock %}
 
-- keep the if/else logic in fewer places
+- Keep the if/else logic in fewer places
+
 Wrap them in a function and reuse it where it is possible. Sometimes, it 's hard to extract it into function because they are slightly different. Try to write in general context, think about its behavior, and make it fit.
 
 If you feel you are doing too much `if/else`, go back one step why you are doing that way. Try to use the correct objects that fit to your scenarios.
@@ -138,4 +143,6 @@ def resolve_language
 end
 {% endcodeblock %}
 
-- There are two more that could help by using `Polymorphism` and `Factory pattern`. I recommend you read the book from **Martin Fowler, Improving the Design of Existing Code**.
+- `Polymorphism` + `Factory pattern`
+
+I recommend you read the book from **Martin Fowler, Improving the Design of Existing Code**.
