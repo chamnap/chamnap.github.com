@@ -5,7 +5,7 @@ date: 2012-06-02 23:26
 comments: true
 categories: [rails, ruby, gem]
 ---
-Last week, we decided to remove `sunspot` gem from this new version App. 
+Last week, we decided to remove `sunspot` gem from this new version App. Therefore, I rolled out a simple and small `solr` library.
 
 I went through the [ActiveRelation Walkthrough](http://railscasts.com/episodes/239-activerecord-relation-walkthrough) episode from RailsCasts long time ago, but now I have a chance to do something similar. I want the search response object lazy to load activerecord objects. I don't want to call `#results` method the same as `sunspot` does. Actually, it's a nice trick and simple to do it.
 
