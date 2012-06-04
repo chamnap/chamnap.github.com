@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-03T21:04:52+07:00</updated>
+  <updated>2012-06-04T11:07:28+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -218,6 +218,12 @@
 </span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>There is still one last tiny problem, it seems <code>Rails</code> doesn't know my new object is a collection object. It passes the whole object to each partial views. How does <code>Rails</code> knows how the passed objects is collection or single object? I digged out the <a href="https://github.com/rails/rails/blob/master/actionpack/lib/action_view/renderer/partial_renderer.rb#L357">rails source code</a>. Actually, it checks with <code>to_ary</code> method, so I just <code>alias</code> method.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">alias</span> <span class="ss">:to_ary</span> <span class="ss">:to_a</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
