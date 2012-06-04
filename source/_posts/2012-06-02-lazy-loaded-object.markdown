@@ -90,3 +90,9 @@ After digging through google, it simply means it doesn't know the partial path t
     @clazz._to_partial_path
   end
 {% endcodeblock %}
+
+There is still one last tiny problem, it seems `Rails` doesn't know my new object is a collection object. It passes the whole object to each partial views. How does `Rails` knows how the passed objects is collection or single object? I digged out the [rails source code](https://github.com/rails/rails/blob/master/actionpack/lib/action_view/renderer/partial_renderer.rb#L357). Actually, it checks with `to_ary` method, so I just `alias` method.
+
+{% codeblock lang:ruby %}
+alias :to_ary :to_a
+{% endcodeblock %}
