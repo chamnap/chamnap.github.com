@@ -9,7 +9,7 @@ In the new project, we have built recently at `Yoolk`. I really enjoyed a lot of
 
 There are things which always bother me a lot is the `if/else` statements. I see them all the time. In my views, `if/else` should be used at the low level of coding. We should not use them too much because it doesn't make the code readable.
 
-I remembered vorleak, my coworker, and I are moderators in a study group long time ago about [Principles of Refacoring](http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/). Two principles that really inspires me quite alot: **less code == less bugs** and **write code for human, not for machine**.
+I remembered [vorleak](http://vorleakchy.com/), my coworker, and I are moderators in a study group long time ago about [Principles of Refacoring](http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/). Two principles that really inspires me quite alot: **less code == less bugs** and **write code for human, not for machine**.
 
 It looks simple to experienced `Rails` developers, but it's useful for novice people. Here are some tips to reduce `if/else` statements:
 
