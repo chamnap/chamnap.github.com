@@ -4,7 +4,7 @@
   <title><![CDATA[Category: refactoring | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/refactoring/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-04T11:07:28+07:00</updated>
+  <updated>2012-06-04T13:47:00+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -22,7 +22,7 @@
 
 <p>There are things which always bother me a lot is the <code>if/else</code> statements. I see them all the time. In my views, <code>if/else</code> should be used at the low level of coding. We should not use them too much because it doesn't make the code readable.</p>
 
-<p>I remembered vorleak, my coworker, and I are moderators in a study group long time ago about <a href="http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/">Principles of Refacoring</a>. Two principles that really inspires me quite alot: <strong>less code == less bugs</strong> and <strong>write code for human, not for machine</strong>.</p>
+<p>I remembered <a href="http://vorleakchy.com/">vorleak</a>, my coworker, and I are moderators in a study group long time ago about <a href="http://chamnap.github.com/blog/2009/09/05/principles-in-refactoring/">Principles of Refacoring</a>. Two principles that really inspires me quite alot: <strong>less code == less bugs</strong> and <strong>write code for human, not for machine</strong>.</p>
 
 <p>It looks simple to experienced <code>Rails</code> developers, but it's useful for novice people. Here are some tips to reduce <code>if/else</code> statements:</p>
 
