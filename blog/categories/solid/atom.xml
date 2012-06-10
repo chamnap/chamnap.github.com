@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: solid | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/solid/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-06-11T01:48:29+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Module or Class?]]></title>
+    <link href="http://chamnap.github.com/blog/2012/06/10/module-or-class/"/>
+    <updated>2012-06-10T23:15:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/06/10/module-or-class</id>
+    <content type="html"><![CDATA[<p>Just see the title, you would probably could answer this question very well. A module cannot be instantiated, is used to mixin, while a class can be instantiated, and so on. However, this blog post is not a tutorial at all. There is something else you could learn from it.</p>
+
+<p>Last week, I paired with my boss, @jensendarren. He asked me a question about my code which I have never thought before. Why don't you make <code>ListingConverter</code> as a module and use it as a <code>mixin</code> to the <code>Listing</code> class? Actually, he asked me the right thing because sometimes I write a module, some other times I write a class and using <code>delegate</code>. Here is my code.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Listing</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">delegate</span> <span class="ss">:to_solr</span><span class="p">,</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="n">converter</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  def converter&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="no">ListingConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>He probably wants something like this.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Listing</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">ListingConverter</span>
+</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;module ListingConverter</span>
+</span><span class='line'><span class="sr">  def to_solr</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>At that time, I couldn't answer him very well. I have read <a href="http://www.amazon.com/Rails-AntiPatterns-Refactoring-Addison-Wesley-Professional/dp/0321604814">Rails Anti-Pattern book</a> some months ago and I followed that book because it's very convincing to me.
+To be honest I never thought about using as a <code>module</code> or a <code>class</code>. I just understand that the author is trying to break responsibilities into multiple classes, <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single Responsibilities Principle (SRP)</a>. Each class should have very specific use case and few reasons to change.</p>
+
+<p>Thinking about SRP reminds me about blog post, <a href="http://blog.rubybestpractices.com/posts/gregory/055-issue-23-solid-design.html">SOLID Design Principles</a> from <a href="http://blog.rubybestpractices.com/about/gregory.html">Gregory Brown</a> which I read it some months ago as well. For me, it's an excellent blog post because it changes me quite a lot. I would recommend you go through it, at least <strong>SRP</strong>. My response will take it as a reference.</p>
+
+<p>Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, I would say a <code>class</code> wins over a <code>module</code> in terms of efficiency.</p>
+
+<p>My <code>ListingConverter</code> class contains only 1 public method, <code>#to_solr</code> and almost 20 private methods. It is responsible for converting into solr json format.</p>
+
+<ul>
+<li><p>If <code>ListingConverter</code> is a module, <code>Listing</code> would contain unneccessary methods,  and if we have 50 mixined into, the <code>Listing</code> instance would become bigger and bigger objects, 200 methods. Imagine this case, what if each module has name collision? Then, it might be difficult to track down the case and find out what's wrong in those 50 mixins. Usually, a <code>Listing</code> instance would not use <code>to_solr</code> method most of the time, but those additional methods from each module are always there which is not optimal at all. The thing will be worse when we load 5000 <code>Listing</code> instance at a time to do reporting for example because the memory would go up steadily.</p></li>
+<li><p>Make <code>ListingConverter</code> as a class is more about <strong>Single Responsibility</strong>. This class just does only one thing, convert <code>activerecord</code> into <code>solr</code>. It would be better to treat <code>Listing</code> class like a big entity contains many small entities. It should forward the message requested to its contained objects. Finally, use <code>delegate</code> from <code>Rails</code> to make interaction a bit easier. What <a href="https://github.com/rails/rails/blob/8ba491acc31bf08cf63a83ea0a3c314c52cd020f/activesupport/lib/active_support/core_ext/module/delegation.rb#L104">delegate</a> does is that it defines methods that are passed in and forwards those methods to the <code>:to</code> object. You could do mannually as below.</p></li>
+</ul>
+
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">to_solr</span>
+</span><span class='line'>  <span class="no">ListingConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_solr</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>It only instantiates <code>ListingConverter</code> only when we call <code>#to_solr</code> method which is more efficient. At the end of the day, the <code>Listing</code> class contains only 1 additional public method.</p>
+]]></content>
+  </entry>
+  
+</feed>

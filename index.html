@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="Last week, we decided to remove sunspot gem from this new version App. Therefore, I rolled out a simple and small solr library. I went through the &hellip;">
+  <meta name="description" content="Just see the title, you would probably could answer this question very well. A module cannot be instantiated, is used to mixin, while a class can be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,110 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/10/module-or-class/">Module or Class?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-10T23:15:00+07:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/06/10/module-or-class/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Just see the title, you would probably could answer this question very well. A module cannot be instantiated, is used to mixin, while a class can be instantiated, and so on. However, this blog post is not a tutorial at all. There is something else you could learn from it.</p>
+
+<p>Last week, I paired with my boss, @jensendarren. He asked me a question about my code which I have never thought before. Why don&#8217;t you make <code>ListingConverter</code> as a module and use it as a <code>mixin</code> to the <code>Listing</code> class? Actually, he asked me the right thing because sometimes I write a module, some other times I write a class and using <code>delegate</code>. Here is my code.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Listing</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">delegate</span> <span class="ss">:to_solr</span><span class="p">,</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="n">converter</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">converter</span>
+</span><span class='line'>    <span class="no">ListingConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>He probably wants something like this.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Listing</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">ListingConverter</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">ListingConverter</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">to_solr</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At that time, I couldn&#8217;t answer him very well. I have read <a href="http://www.amazon.com/Rails-AntiPatterns-Refactoring-Addison-Wesley-Professional/dp/0321604814">Rails Anti-Pattern book</a> some months ago and I followed that book because it&#8217;s very convincing to me.
+To be honest I never thought about using as a <code>module</code> or a <code>class</code>. I just understand that the author is trying to break responsibilities into multiple classes, <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single Responsibilities Principle (SRP)</a>. Each class should have very specific use case and few reasons to change.</p>
+
+<p>Thinking about SRP reminds me about blog post, <a href="http://blog.rubybestpractices.com/posts/gregory/055-issue-23-solid-design.html">SOLID Design Principles</a> from <a href="http://blog.rubybestpractices.com/about/gregory.html">Gregory Brown</a> which I read it some months ago as well. For me, it&#8217;s an excellent blog post because it changes me quite a lot. I would recommend you go through it, at least <strong>SRP</strong>. My response will take it as a reference.</p>
+
+<p>Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, I would say a <code>class</code> wins over a <code>module</code> in terms of efficiency.</p>
+
+<p>My <code>ListingConverter</code> class contains only 1 public method, <code>#to_solr</code> and almost 20 private methods. It is responsible for converting into solr json format.</p>
+
+<ul>
+<li><p>If <code>ListingConverter</code> is a module, <code>Listing</code> would contain unneccessary methods,  and if we have 50 mixined into, the <code>Listing</code> instance would become bigger and bigger objects, 200 methods. Imagine this case, what if each module has name collision? Then, it might be difficult to track down the case and find out what&#8217;s wrong in those 50 mixins. Usually, a <code>Listing</code> instance would not use <code>to_solr</code> method most of the time, but those additional methods from each module are always there which is not optimal at all. The thing will be worse when we load 5000 <code>Listing</code> instance at a time to do reporting for example because the memory would go up steadily.</p></li>
+<li><p>Make <code>ListingConverter</code> as a class is more about <strong>Single Responsibility</strong>. This class just does only one thing, convert <code>activerecord</code> into <code>solr</code>. It would be better to treat <code>Listing</code> class like a big entity contains many small entities. It should forward the message requested to its contained objects. Finally, use <code>delegate</code> from <code>Rails</code> to make interaction a bit easier. What <a href="https://github.com/rails/rails/blob/8ba491acc31bf08cf63a83ea0a3c314c52cd020f/activesupport/lib/active_support/core_ext/module/delegation.rb#L104">delegate</a> does is that it defines methods that are passed in and forwards those methods to the <code>:to</code> object. You could do mannually as below.</p></li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">to_solr</span>
+</span><span class='line'>  <span class="no">ListingConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_solr</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It only instantiates <code>ListingConverter</code> only when we call <code>#to_solr</code> method which is more efficient. At the end of the day, the <code>Listing</code> class contains only 1 additional public method.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1083,47 +1187,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/03/29/rest-presenation-on-devcamp/">REST Presenation on DevCamp</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-03-29T10:42:00+07:00" pubdate data-updated="true">Mar 29<span>th</span>, 2011</time>
-        
-         | <a href="/blog/2011/03/29/rest-presenation-on-devcamp/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Last sunday, I talked to some people, around 10 software developers, about how to build web services using REST architecture. However, I didn&#8217;t talk on my previous slide presentation. I took on <a href="http://chamnapchhorn.blogspot.com/2011/03/www.slideshare.net/kjbuckley/doing-rest-right-3385800">Doing REST Right</a> by Kerry Buckley. I decided to choose this slide because I feel I learnt something new and it&#8217;s recommended by my boss, Chris. Actually, I were not well-prepared, but the presentation went well. I missed some slides before I went to do this presentation.</p>
-
-<div style="width:425px" id="__ss_3385800"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/kjbuckley/doing-rest-right-3385800" title="Doing REST Right" target="_blank">Doing REST Right</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/3385800" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/kjbuckley" target="_blank">Kerry Buckley</a> </div> </div>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1147,6 +1210,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/06/10/module-or-class/">Module or Class?</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/02/lazy-loaded-object/">Lazy-loaded object</a>
       </li>
     
@@ -1160,10 +1227,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2011/10/23/what-we-should-do/">What we should do as a software developer</a>
       </li>
     
   </ul>
