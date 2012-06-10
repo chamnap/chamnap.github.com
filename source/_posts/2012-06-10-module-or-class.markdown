@@ -37,7 +37,7 @@ To be honest I never thought about using as a `module` or a `class`. I just unde
 
 Thinking about SRP reminds me about blog post, [SOLID Design Principles](http://blog.rubybestpractices.com/posts/gregory/055-issue-23-solid-design.html) from [Gregory Brown](http://blog.rubybestpractices.com/about/gregory.html) which I read it some months ago as well. For me, it's an excellent blog post because it changes me quite a lot. I would recommend you go through it, at least **SRP**. My response will take it as a reference.
 
-Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, I would say a `class` wins over a `module` in terms of efficiency.
+Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, **I would say a `class` wins over a `module` in terms of efficiency.**
 
 My `ListingConverter` class contains only 1 public method, `#to_solr` and almost 20 private methods. It is responsible for converting into solr json format. 
 
