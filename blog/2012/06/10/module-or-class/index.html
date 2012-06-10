@@ -151,7 +151,7 @@ To be honest I never thought about using as a <code>module</code> or a <code>cla
 
 <p>Thinking about SRP reminds me about blog post, <a href="http://blog.rubybestpractices.com/posts/gregory/055-issue-23-solid-design.html">SOLID Design Principles</a> from <a href="http://blog.rubybestpractices.com/about/gregory.html">Gregory Brown</a> which I read it some months ago as well. For me, it&#8217;s an excellent blog post because it changes me quite a lot. I would recommend you go through it, at least <strong>SRP</strong>. My response will take it as a reference.</p>
 
-<p>Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, I would say a <code>class</code> wins over a <code>module</code> in terms of efficiency.</p>
+<p>Actually, these two above code achieve the same result, but there is case where we should use one rather than the other. In this case, <strong>I would say a <code>class</code> wins over a <code>module</code> in terms of efficiency.</strong></p>
 
 <p>My <code>ListingConverter</code> class contains only 1 public method, <code>#to_solr</code> and almost 20 private methods. It is responsible for converting into solr json format.</p>
 
