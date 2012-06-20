@@ -4,7 +4,7 @@
   <title><![CDATA[Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-12T21:42:38+07:00</updated>
+  <updated>2012-06-20T19:58:59+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[active_record_uuid 0.1.0 is released]]></title>
+    <link href="http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/"/>
+    <updated>2012-06-20T19:34:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released</id>
+    <content type="html"><![CDATA[<p>For the past two weeks, I have been working on the <a href="https://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>. It&#8217;s a nice experience because I have learnt quite a lot even though it&#8217;s a small gem. This gem provides <code>uuid</code> support to active_record model. It allows you to store <code>uuid</code> as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, and <code>string</code>. Actually, this gem is well-tested (55 examples). Fork me or create issue on GitHub if you see a bug.</p>
+
+<p>The good thing about this gem is that you query the data by using a plain <code>uuid</code> string while you store as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, or <code>string</code>.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">post</span> <span class="o">=</span> <span class="no">PostBinary</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Binary uuid1&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># INSERT INTO `post_binaries` (`created_at`, `text`, `updated_at`, `uuid`) VALUES (&#39;2012-06-20 17:32:47&#39;, &#39;Binary uuid1&#39;, &#39;2012-06-20 17:32:47&#39;, x&#39;4748f690bac311e18e440026b90faf3c&#39;)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">uuid</span> <span class="c1"># &quot;4748f690-bac3-11e1-8e44-0026b90faf3c&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># it works as usual for finding records</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find_by_uuid</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:uuid</span> <span class="o">=&gt;</span> <span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">[</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Comment 1&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># access the value that stored in db</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">reload</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">attributes_before_type_cast</span><span class="o">[</span><span class="s2">&quot;uuid&quot;</span><span class="o">][</span><span class="s2">&quot;value&quot;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Be sure to check out other options to use at <a href="https://github.com/chamnap/active_record_uuid/blob/master/README.md">https://github.com/chamnap/active_record_uuid/blob/master/README.md</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Module or Class?]]></title>

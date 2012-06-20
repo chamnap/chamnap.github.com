@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: uuid | Chamnap Chhorn]]></title>
+  <link href="http://chamnap.github.com/blog/categories/uuid/atom.xml" rel="self"/>
+  <link href="http://chamnap.github.com/"/>
+  <updated>2012-06-20T19:58:59+07:00</updated>
+  <id>http://chamnap.github.com/</id>
+  <author>
+    <name><![CDATA[Chamnap Chhorn]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[active_record_uuid 0.1.0 is released]]></title>
+    <link href="http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/"/>
+    <updated>2012-06-20T19:34:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released</id>
+    <content type="html"><![CDATA[<p>For the past two weeks, I have been working on the <a href="https://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>. It's a nice experience because I have learnt quite a lot even though it's a small gem. This gem provides <code>uuid</code> support to active_record model. It allows you to store <code>uuid</code> as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, and <code>string</code>. Actually, this gem is well-tested (55 examples). Fork me or create issue on GitHub if you see a bug.</p>
+
+<p>The good thing about this gem is that you query the data by using a plain <code>uuid</code> string while you store as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, or <code>string</code>.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">post</span> <span class="o">=</span> <span class="no">PostBinary</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Binary uuid1&quot;</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;INSERT INTO &lt;code&gt;post_binaries&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">created_at</span><span class="o">&lt;</span><span class="sr">/code&gt;, &lt;code&gt;text&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">updated_at</span><span class="o">&lt;</span><span class="sr">/code&gt;, &lt;code&gt;uuid&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="p">)</span> <span class="no">VALUES</span> <span class="p">(</span><span class="s1">&#39;2012-06-20 17:32:47&#39;</span><span class="p">,</span> <span class="s1">&#39;Binary uuid1&#39;</span><span class="p">,</span> <span class="s1">&#39;2012-06-20 17:32:47&#39;</span><span class="p">,</span> <span class="n">x</span><span class="s1">&#39;4748f690bac311e18e440026b90faf3c&#39;</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;post.uuid # &quot;4748f690-bac3-11e1-8e44-0026b90faf3c&quot;&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">it</span> <span class="n">works</span> <span class="n">as</span> <span class="n">usual</span> <span class="k">for</span> <span class="n">finding</span> <span class="n">records</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;PostBinary.find_by_uuid(post.uuid)</span>
+</span><span class='line'><span class="sr">PostBinary.where(:uuid =&gt; post.uuid)</span>
+</span><span class='line'><span class="sr">PostBinary.find(post)</span>
+</span><span class='line'><span class="sr">PostBinary.find(post.uuid)</span>
+</span><span class='line'><span class="sr">PostBinary.find([post.uuid])</span>
+</span><span class='line'><span class="sr">post.comments.create(:text =&gt; &quot;Comment 1&quot;)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">access</span> <span class="n">the</span> <span class="n">value</span> <span class="n">that</span> <span class="n">stored</span> <span class="k">in</span> <span class="n">db</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;post.reload</span>
+</span><span class='line'><span class="sr">post.attributes_before_type_cast[&quot;uuid&quot;][&quot;value&quot;]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Be sure to check out other options to use at <a href="https://github.com/chamnap/active_record_uuid/blob/master/README.md">https://github.com/chamnap/active_record_uuid/blob/master/README.md</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

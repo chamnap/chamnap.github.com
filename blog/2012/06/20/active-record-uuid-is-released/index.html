@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>What we should do as a software developer - Chamnap Chhorn</title>
+  <title>active_record_uuid 0.1.0 is released - Chamnap Chhorn</title>
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="I have been working at Yoolk for about 3 years and a half. It is an enjoyable and challenging workplace I have ever worked. Just to share my thoughts &hellip;">
+  <meta name="description" content="For the past two weeks, I have been working on the active_record_uuid gem. It&#8217;s a nice experience because I have learnt quite a lot even though &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chamnap.github.com/blog/2011/10/23/what-we-should-do">
+  <link rel="canonical" href="http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">What We Should Do as a Software Developer</h1>
+      <h1 class="entry-title">Active_record_uuid 0.1.0 Is Released</h1>
     
     
       <p class="meta">
@@ -96,7 +96,7 @@
   
 
 
-<time datetime="2011-10-23T20:47:00+07:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
+<time datetime="2012-06-20T19:34:00+07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -105,16 +105,46 @@
   </header>
 
 
-<div class="entry-content"><p>I have been working at Yoolk for about 3 years and a half. It is an enjoyable and challenging workplace I have ever worked. Just to share my thoughts, my skills and how and where I should improve more.
-After gone through several ruby books, I was convinced again and again to write the test before I code. Basically, I could do this since the day I joined the Mango team, however that was my bad habit to write the test after. It&#8217;s probably because I&#8217;m very curious and anxious to see the result rather than see the test. Actually, at that time my testing theory was so poor. It was probably a year after I get promoted, I spent quite a lot of time to read the Testing theory from various books, but still write the test after writing code.</p>
+<div class="entry-content"><p>For the past two weeks, I have been working on the <a href="https://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>. It&#8217;s a nice experience because I have learnt quite a lot even though it&#8217;s a small gem. This gem provides <code>uuid</code> support to active_record model. It allows you to store <code>uuid</code> as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, and <code>string</code>. Actually, this gem is well-tested (55 examples). Fork me or create issue on GitHub if you see a bug.</p>
 
-<p>Two months ago, I have gone through many links that describes how professional rubyists do while coding. I have learnt how to do intergration testing, cucumber, capybara, factory_girl, and rails 3. I feel I need to do some experiments, so I took a chance at my work to improve test coverage. Even though I could not do very well at the first time, I still write test later and open browser for testing at some times, it&#8217;s a very nice experience to follow. Testing drives me really well.</p>
+<p>The good thing about this gem is that you query the data by using a plain <code>uuid</code> string while you store as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, or <code>string</code>.</p>
 
-<p>Another problem is that I often get distracted during working. Some people asked me to do this, other people have some questions. It&#8217;s just messing my workflow and the rythm. Sometimes, there are some urgent emails needed to reply quickly or servers are down. All sorts of those things make me less enjoyable to code. Thinking back again, what I could do is to write documentation more. Because I&#8217;m the one who writes the main API used by many people. Those people would need to consult with the documentation rather than me. Only the critical issues should come to me. That would helped me much. Just to write all documentation in one go is a boring task because now the API is fairly full-featured. Therefore, I took another chance to write a documentation on my new Audit API, and I would tell everyone go through that before asking me. Then, I would rest in peace while coding.</p>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">post</span> <span class="o">=</span> <span class="no">PostBinary</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Binary uuid1&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># INSERT INTO `post_binaries` (`created_at`, `text`, `updated_at`, `uuid`) VALUES (&#39;2012-06-20 17:32:47&#39;, &#39;Binary uuid1&#39;, &#39;2012-06-20 17:32:47&#39;, x&#39;4748f690bac311e18e440026b90faf3c&#39;)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">uuid</span> <span class="c1"># &quot;4748f690-bac3-11e1-8e44-0026b90faf3c&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># it works as usual for finding records</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find_by_uuid</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:uuid</span> <span class="o">=&gt;</span> <span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">[</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Comment 1&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># access the value that stored in db</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">reload</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">attributes_before_type_cast</span><span class="o">[</span><span class="s2">&quot;uuid&quot;</span><span class="o">][</span><span class="s2">&quot;value&quot;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>I have watched a few episodes from peepcode as well. I feel I was addicted to checking email, news, facebook, twitter. It is burnt me down sometimes. I got very little done. I reviewed my daily work, and I solved those problems. I took those offline while I&#8217;m coding. I only checked mail few times per day, checking facebook only when I finish a task. Then, everything is back to productivity.</p>
 
-<p>The other thing I never done before is contributing to open source community. I have working with many oss projects, but I never contribute back. It&#8217;s because I don&#8217;t know how to do so, why I should do. Now, I understand why it&#8217;s important and quite useful to others. I have fixed a few bugs on the open source projects. the problem is that I need to learn in order to commit the code back. I used to ask my coworker how to do, but he didn&#8217;t explain me very well. In the next week, I would try to do on my own to contribute back of what I have done for my personal projects.</p>
+<p>Be sure to check out other options to use at <a href="https://github.com/chamnap/active_record_uuid/blob/master/README.md">https://github.com/chamnap/active_record_uuid/blob/master/README.md</a>.</p>
 </div>
 
 
@@ -137,12 +167,12 @@ After gone through several ruby books, I was convinced again and again to write 
   
 
 
-<time datetime="2011-10-23T20:47:00+07:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
+<time datetime="2012-06-20T19:34:00+07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/developer/'>developer</a>
+    <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/uuid/'>uuid</a>
   
 </span>
 
@@ -151,7 +181,7 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2011/10/23/what-we-should-do/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2011/10/23/what-we-should-do/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/" >Tweet</a>
   
   
   
@@ -160,10 +190,8 @@ After gone through several ruby books, I was convinced again and again to write 
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2011/10/21/the-benefits-of-addressability-in-rest-web-service/" title="Previous Post: The benefits of addressability in REST web service">&laquo; The benefits of addressability in REST web service</a>
+        <a class="basic-alignment left" href="/blog/2012/06/10/module-or-class/" title="Previous Post: Module or Class?">&laquo; Module or Class?</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/" title="Next Post: Remove focus options on your spec examples">Remove focus options on your spec examples &raquo;</a>
       
     </p>
   </footer>
@@ -283,8 +311,8 @@ After gone through several ruby books, I was convinced again and again to write 
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://chamnap.github.com/blog/2011/10/23/what-we-should-do/';
-        var disqus_url = 'http://chamnap.github.com/blog/2011/10/23/what-we-should-do/';
+        var disqus_identifier = 'http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/';
+        var disqus_url = 'http://chamnap.github.com/blog/2012/06/20/active-record-uuid-is-released/';
         var disqus_script = 'embed.js';
       
     (function () {

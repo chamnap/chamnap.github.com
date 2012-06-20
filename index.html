@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="Just see the title, you would probably could answer this question very well. A module cannot be instantiated, is used to mixin, while a class can be &hellip;">
+  <meta name="description" content="For the past two weeks, I have been working on the active_record_uuid gem. It&#8217;s a nice experience because I have learnt quite a lot even though &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,83 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/20/active-record-uuid-is-released/">Active_record_uuid 0.1.0 Is Released</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-20T19:34:00+07:00" pubdate data-updated="true">Jun 20<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/06/20/active-record-uuid-is-released/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For the past two weeks, I have been working on the <a href="https://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>. It&#8217;s a nice experience because I have learnt quite a lot even though it&#8217;s a small gem. This gem provides <code>uuid</code> support to active_record model. It allows you to store <code>uuid</code> as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, and <code>string</code>. Actually, this gem is well-tested (55 examples). Fork me or create issue on GitHub if you see a bug.</p>
+
+<p>The good thing about this gem is that you query the data by using a plain <code>uuid</code> string while you store as <code>binary</code>, <code>base64</code>, <code>hexdigest</code>, or <code>string</code>.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">post</span> <span class="o">=</span> <span class="no">PostBinary</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Binary uuid1&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># INSERT INTO `post_binaries` (`created_at`, `text`, `updated_at`, `uuid`) VALUES (&#39;2012-06-20 17:32:47&#39;, &#39;Binary uuid1&#39;, &#39;2012-06-20 17:32:47&#39;, x&#39;4748f690bac311e18e440026b90faf3c&#39;)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">uuid</span> <span class="c1"># &quot;4748f690-bac3-11e1-8e44-0026b90faf3c&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># it works as usual for finding records</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find_by_uuid</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:uuid</span> <span class="o">=&gt;</span> <span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+</span><span class='line'><span class="no">PostBinary</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">[</span><span class="n">post</span><span class="o">.</span><span class="n">uuid</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">&quot;Comment 1&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># access the value that stored in db</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">reload</span>
+</span><span class='line'><span class="n">post</span><span class="o">.</span><span class="n">attributes_before_type_cast</span><span class="o">[</span><span class="s2">&quot;uuid&quot;</span><span class="o">][</span><span class="s2">&quot;value&quot;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Be sure to check out other options to use at <a href="https://github.com/chamnap/active_record_uuid/blob/master/README.md">https://github.com/chamnap/active_record_uuid/blob/master/README.md</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1147,47 +1224,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/04/30/high-performance-website-at-hackerspacepp/">High Performance Website at Hackerspacepp</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-04-30T00:55:00+07:00" pubdate data-updated="true">Apr 30<span>th</span>, 2011</time>
-        
-         | <a href="/blog/2011/04/30/high-performance-website-at-hackerspacepp/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;m a little bit disappointed in myself. What I intended to do presentation is about Web Scaling, but I ended up with go through the front end side. This presentation will focus on how to make your website faster on the front end side. I did focus on some aspects on HTTP concept as well. Those are rules from Steve Souders, but I modify and adjust to make it clear to the audience.</p>
-
-<div style="width:425px" id="__ss_7783873"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/high-performance-website-7783873" title="High performance website" target="_blank">High performance website</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7783873" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1211,6 +1247,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/06/20/active-record-uuid-is-released/">active_record_uuid 0.1.0 is released</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/10/module-or-class/">Module or Class?</a>
       </li>
     
@@ -1224,10 +1264,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/17/remove-focus-options-on-your-spec-examples/">Remove focus options on your spec examples</a>
       </li>
     
   </ul>
