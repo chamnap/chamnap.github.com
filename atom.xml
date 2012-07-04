@@ -4,7 +4,7 @@
   <title><![CDATA[Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-06-21T23:39:57+07:00</updated>
+  <updated>2012-07-05T01:17:06+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Lesson learned from alias_method_chain]]></title>
+    <link href="http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/"/>
+    <updated>2012-07-04T22:36:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain</id>
+    <content type="html"><![CDATA[<p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecord</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Associations</span>
+</span><span class='line'>    <span class="k">module</span> <span class="nn">ClassMethods</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">has_many_with_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">has_many_without_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">alias_method_chain</span> <span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:defaults</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Read that code again, I realized there are two things that my code could be changed in the future. Those are the module and method&#8217;s name. If one day the <code>Rails</code> team decide to change the module name, then I would have to do another commit to fix that. In addition, method name is a bit longer and cumbersome as well.</p>
+
+<p>I took one step back and think about it again. That module is simply included into <code>ActiveRecord::Base</code>. From here, it reminds about my ruby lesson. Ruby method lookup path is the reverse order of module inclusion. Why Ruby does that? Well, it is because it is designed to be extensible.</p>
+
+<p>Therefore, if I define another module and include it very last, my method should be run before the original method. That&#8217;s cool, isn&#8217;t it? Calling the original version is even easier, call <code>#super</code> will does the job. It&#8217;s awesome.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecordUuid</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">AssociationMethods</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">has_many</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">super</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:extend</span><span class="p">,</span> <span class="no">ActiveRecordUuid</span><span class="o">::</span><span class="no">AssociationMethods</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The question arrives to my head. What is the use of <code>alias_method_chain</code>? What is it for? Well, in the above case, I wouldn&#8217;t need it, but it&#8217;s still useful to overwrite the methods which are defined originally in that class.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Person</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">MyModule</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;hello from module&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There is no use if I <code>include</code> <code>MyModule</code> into <code>Person</code> class, because Ruby will run the method inside that class, then the method inside the module. In this case, only <code>alias_method_chain</code> could help.</p>
+
+<p>It&#8217;s hard to see any good guidelines to do extensions when developing the gem, but here it&#8217;s a better way to do the job.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[active_record_uuid 0.1.0 is released]]></title>
@@ -1180,18 +1284,6 @@ view plainprint?</p>
 
 
 <p>That would solve the problem, and you could send any information back through your view.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavaScript in Object-Oriented Way Presentation]]></title>
-    <link href="http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation/"/>
-    <updated>2009-05-13T10:59:00+07:00</updated>
-    <id>http://chamnap.github.com/blog/2009/05/13/javascript-in-object-oriented-way-presentation</id>
-    <content type="html"><![CDATA[<p>I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand really well. This slide covers many advanced features of JavaScript: Function, Object, Closure,&#8230;. Some other points I have pointed out in this slide are about how to make private variable, public variable, static variable, privileged variable and how to do inheritance. I took about 20 different sources as my references and three famous authors. It took me two weeks, at every weekend, to finish this slide.</p>
-
-<div style="width:425px" id="__ss_1426608"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/cchamnap/javascript-in-objectoriented-way" title="JavaScript in Object-Oriented Way" target="_blank">JavaScript in Object-Oriented Way</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/1426608" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/thecroaker/death-by-powerpoint" target="_blank">PowerPoint</a> from <a href="http://www.slideshare.net/cchamnap" target="_blank">Chamnap Chhorn</a> </div> </div>
-
 ]]></content>
   </entry>
   

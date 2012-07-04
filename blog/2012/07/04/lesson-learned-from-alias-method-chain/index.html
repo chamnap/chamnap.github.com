@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Remove focus options on your spec examples - Chamnap Chhorn</title>
+  <title>Lesson learned from alias_method_chain - Chamnap Chhorn</title>
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="When using rspec in my rails projects, I often add :focus =&gt; true on describe/context/it block and let guard running the tests on those new specs &hellip;">
+  <meta name="description" content="A couple week ago, while I was developing the active_record_uuid gem, I need to do extension to the existing methods in active_record library. The &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples">
+  <link rel="canonical" href="http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Remove Focus Options on Your Spec Examples</h1>
+      <h1 class="entry-title">Lesson Learned From Alias_method_chain</h1>
     
     
       <p class="meta">
@@ -96,7 +96,7 @@
   
 
 
-<time datetime="2012-05-17T00:39:00+07:00" pubdate data-updated="true">May 17<span>th</span>, 2012</time>
+<time datetime="2012-07-04T22:36:00+07:00" pubdate data-updated="true">Jul 4<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -105,7 +105,7 @@
   </header>
 
 
-<div class="entry-content"><p>When using rspec in my rails projects, I often add <code>:focus =&gt; true</code> on <code>describe/context/it block</code> and let <code>guard</code> running the tests on those new specs. I need to remove it from various places to run the test fully. It&#8217;s a bit annoying, actually. Therefore, I decide to write a ruby script just to do this thing:</p>
+<div class="entry-content"><p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -121,28 +121,28 @@
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
-</span><span class='line'><span class="n">founds</span> <span class="o">=</span> <span class="sb">`grep -n -r &quot;:focus =&gt; true&quot; spec/`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecord</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Associations</span>
+</span><span class='line'>    <span class="k">module</span> <span class="nn">ClassMethods</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">has_many_with_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">#path;line_number;matched_content</span>
-</span><span class='line'><span class="n">founds</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">string</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">array</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">path</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">line_number</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">matched_line</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="mi">2</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">has_many_without_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">alias_method_chain</span> <span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:defaults</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="n">matched_line</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^\s*(describe|context|it).+(:focus\s*?=&gt;\s*?true do$)/</span><span class="p">)</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="se">\e</span><span class="s2">[0;32m</span><span class="si">#{</span><span class="n">string</span><span class="si">}</span><span class="se">\e</span><span class="s2">[0m&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">system</span> <span class="s2">&quot;sed -i &#39;</span><span class="si">#{</span><span class="n">line_number</span><span class="si">}</span><span class="s2"> s/,</span><span class="se">\s</span><span class="s2">*:focus</span><span class="se">\s</span><span class="s2">*=&gt;</span><span class="se">\s</span><span class="s2">*true//&#39; </span><span class="si">#{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>      <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>What this code does is checking all the spec directory to remove them on every <code>describe/context/it block</code>. You would see I use very strict regular expression just to ensure I&#8217;m doing the write thing. I placed this script under script directory of my rails app. You may write this code better, but this is how i do it. I also create a rake script and add to hg before commit hook.</p>
+<p>Read that code again, I realized there are two things that my code could be changed in the future. Those are the module and method&#8217;s name. If one day the <code>Rails</code> team decide to change the module name, then I would have to do another commit to fix that. In addition, method name is a bit longer and cumbersome as well.</p>
+
+<p>I took one step back and think about it again. That module is simply included into <code>ActiveRecord::Base</code>. From here, it reminds about my ruby lesson. Ruby method lookup path is the reverse order of module inclusion. Why Ruby does that? Well, it is because it is designed to be extensible.</p>
+
+<p>Therefore, if I define another module and include it very last, my method should be run before the original method. That&#8217;s cool, isn&#8217;t it? Calling the original version is even easier, call <code>#super</code> will does the job. It&#8217;s awesome.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -150,25 +150,57 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">namespace</span> <span class="ss">:spec</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">desc</span> <span class="s2">&quot;remove :focus =&gt; true in all specs&quot;</span>
-</span><span class='line'>  <span class="n">task</span> <span class="ss">:remove_focus</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">require_relative</span> <span class="s1">&#39;../../script/remove_focus&#39;</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecordUuid</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">AssociationMethods</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">has_many</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">super</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:extend</span><span class="p">,</span> <span class="no">ActiveRecordUuid</span><span class="o">::</span><span class="no">AssociationMethods</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The question arrives to my head. What is the use of <code>alias_method_chain</code>? What is it for? Well, in the above case, I wouldn&#8217;t need it, but it&#8217;s still useful to overwrite the methods which are defined originally in that class.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Person</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">MyModule</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;hello from module&quot;</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>There is no use if I <code>include</code> <code>MyModule</code> into <code>Person</code> class, because Ruby will run the method inside that class, then the method inside the module. In this case, only <code>alias_method_chain</code> could help.</p>
 
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="n">hooks</span><span class="o">]</span>
-</span><span class='line'><span class="n">precommit</span> <span class="o">=</span> <span class="n">script</span><span class="o">/</span><span class="n">remove_focus</span><span class="o">.</span><span class="n">rb</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<p>It&#8217;s hard to see any good guidelines to do extensions when developing the gem, but here it&#8217;s a better way to do the job.</p>
 </div>
 
 
@@ -191,21 +223,15 @@
   
 
 
-<time datetime="2012-05-17T00:39:00+07:00" pubdate data-updated="true">May 17<span>th</span>, 2012</time>
+<time datetime="2012-07-04T22:36:00+07:00" pubdate data-updated="true">Jul 4<span>th</span>, 2012</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/rspec/'>rspec</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/" >Tweet</a>
   
   
   
@@ -214,10 +240,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2011/10/23/what-we-should-do/" title="Previous Post: What we should do as a software developer">&laquo; What we should do as a software developer</a>
+        <a class="basic-alignment left" href="/blog/2012/06/20/active-record-uuid-is-released/" title="Previous Post: active_record_uuid 0.1.0 is released">&laquo; active_record_uuid 0.1.0 is released</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/05/24/unit-test-or-integration-test/" title="Next Post: Unit Test or Integration Test?">Unit Test or Integration Test? &raquo;</a>
       
     </p>
   </footer>
@@ -343,8 +367,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/';
-        var disqus_url = 'http://chamnap.github.com/blog/2012/05/17/remove-focus-options-on-your-spec-examples/';
+        var disqus_identifier = 'http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/';
+        var disqus_url = 'http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/';
         var disqus_script = 'embed.js';
       
     (function () {

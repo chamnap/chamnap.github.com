@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="For the past two weeks, I have been working on the active_record_uuid gem. It&#8217;s a nice experience because I have learnt quite a lot even though &hellip;">
+  <meta name="description" content="A couple week ago, while I was developing the active_record_uuid gem, I need to do extension to the existing methods in active_record library. The &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,139 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/">Lesson Learned From Alias_method_chain</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-04T22:36:00+07:00" pubdate data-updated="true">Jul 4<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecord</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">Associations</span>
+</span><span class='line'>    <span class="k">module</span> <span class="nn">ClassMethods</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">has_many_with_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">has_many_without_defaults</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="n">alias_method_chain</span> <span class="ss">:has_many</span><span class="p">,</span> <span class="ss">:defaults</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Read that code again, I realized there are two things that my code could be changed in the future. Those are the module and method&#8217;s name. If one day the <code>Rails</code> team decide to change the module name, then I would have to do another commit to fix that. In addition, method name is a bit longer and cumbersome as well.</p>
+
+<p>I took one step back and think about it again. That module is simply included into <code>ActiveRecord::Base</code>. From here, it reminds about my ruby lesson. Ruby method lookup path is the reverse order of module inclusion. Why Ruby does that? Well, it is because it is designed to be extensible.</p>
+
+<p>Therefore, if I define another module and include it very last, my method should be run before the original method. That&#8217;s cool, isn&#8217;t it? Calling the original version is even easier, call <code>#super</code> will does the job. It&#8217;s awesome.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActiveRecordUuid</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">AssociationMethods</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">has_many</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">&amp;</span><span class="n">extension</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">options</span> <span class="o">=</span> <span class="n">uuid_assoc_options</span><span class="p">(</span><span class="ss">:has_many</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">super</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:extend</span><span class="p">,</span> <span class="no">ActiveRecordUuid</span><span class="o">::</span><span class="no">AssociationMethods</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The question arrives to my head. What is the use of <code>alias_method_chain</code>? What is it for? Well, in the above case, I wouldn&#8217;t need it, but it&#8217;s still useful to overwrite the methods which are defined originally in that class.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Person</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;Hello&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">MyModule</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">hello</span>
+</span><span class='line'>    <span class="s2">&quot;hello from module&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There is no use if I <code>include</code> <code>MyModule</code> into <code>Person</code> class, because Ruby will run the method inside that class, then the method inside the module. In this case, only <code>alias_method_chain</code> could help.</p>
+
+<p>It&#8217;s hard to see any good guidelines to do extensions when developing the gem, but here it&#8217;s a better way to do the job.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1171,59 +1304,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/05/06/add-ssh-key-to-your-ubuntu-server/">Add Ssh Key to Your Ubuntu Server</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-05-06T02:27:00+07:00" pubdate data-updated="true">May 6<span>th</span>, 2011</time>
-        
-         | <a href="/blog/2011/05/06/add-ssh-key-to-your-ubuntu-server/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Add ssh-key to your ubuntu server is a common task for most developers to be able to remote your dedicated server via SSH. Normally, I do this with my local virtual box server. It&#8217;s fairly easy to do so. Here, I just copied the steps from Yoolk Wiki, written by my boss, Chris.</p>
-
-<p>Generally, it works well on Ubuntu 9.04, but there is problem with Ubuntu 10.04. I&#8217;ll show you here:</p>
-
-<ol>
-<li>server: <code>sudo apt-get update</code></li>
-<li>server: <code>sudo apt-get install openssh-server</code></li>
-<li>server: <code>mkdir .ssh</code></li>
-<li>client: <code>ssh-keygen</code> (don&#8217;t enter any values, press return three times, yes passwords should be blank)</li>
-<li>client: <code>cat .ssh/id_rsa.pub</code> - copy the output to the clipboard (very carefully, no pre/trailing white space)</li>
-<li>server: <code>touch .ssh/authorized_keys</code></li>
-<li>server: <code>sudo vim .ssh/authorized_keys</code> - paste clipboard contents (in order to paste from clipboard, you must remote to your server by login through terminal console)</li>
-</ol>
-
-
-<p>For Ubuntu 10.04, you must run this command <code>ssh-add</code>. If it adds duplicate keys, run <code>ssh-add -D</code> and run <code>ssh-add</code> again. Hope it could help.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1253,6 +1333,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/">Lesson learned from alias_method_chain</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/06/20/active-record-uuid-is-released/">active_record_uuid 0.1.0 is released</a>
       </li>
     
@@ -1266,10 +1350,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2012/05/27/reduce-if-else-statements/">Reduce If/Else Statements</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/24/unit-test-or-integration-test/">Unit Test or Integration Test?</a>
       </li>
     
   </ul>
