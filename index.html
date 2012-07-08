@@ -108,7 +108,7 @@
   </header>
 
 
-  <div class="entry-content"><p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
+  <div class="entry-content"><p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first one is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1320,14 +1320,6 @@ After gone through several ruby books, I was convinced again and again to write 
   <p>My name is Chamnap Chhorn. I am a Ruby and JavaScript Developer living in Phnom Penh, Cambodia. I&#8217;m working with #ruby, #javascript, #rails, #rest-api, #solr, #nginx&#8230;.</p>
   <p>I love every minute of it. I enjoy learning, experimenting, and researching new things.</p>
 </section>
-
-<section>
-  <h1>Stack Overflow</h1>
-  <a href="http://stackoverflow.com/users/170025/chamnap">
-  <img src="http://stackoverflow.com/users/flair/170025.png" width="208" height="58" alt="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
-  </a>
-</section>
-
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
@@ -1399,6 +1391,14 @@ After gone through several ruby books, I was convinced again and again to write 
   
     <a href="http://twitter.com/chamnap" class="twitter-follow-button" data-show-count="false">Follow @chamnap</a>
   
+</section>
+
+
+<section>
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/170025/chamnap">
+  <img src="http://stackoverflow.com/users/flair/170025.png" width="208" height="58" alt="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for chamnap at Stack Overflow, Q&amp;A for professional and enthusiast programmers">
+  </a>
 </section>
 
 

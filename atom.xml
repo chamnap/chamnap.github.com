@@ -4,7 +4,7 @@
   <title><![CDATA[Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-07-05T01:17:06+07:00</updated>
+  <updated>2012-07-08T16:10:06+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -18,7 +18,7 @@
     <link href="http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain/"/>
     <updated>2012-07-04T22:36:00+07:00</updated>
     <id>http://chamnap.github.com/blog/2012/07/04/lesson-learned-from-alias-method-chain</id>
-    <content type="html"><![CDATA[<p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
+    <content type="html"><![CDATA[<p>A couple week ago, while I was developing the <a href="http://rubygems.org/gems/active_record_uuid">active_record_uuid gem</a>, I need to do extension to the existing methods in <code>active_record</code> library. The first one is to send <code>portal_uuid</code> instead of <code>portal_id</code> in the association methods such as <code>has_many</code>, &#8230;. The second one is about quoting <code>uuid</code> value and send it to <code>mysql</code>. I went to see the source code of <code>active_record</code> to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, <code>ActiveRecord::Associations::ClassMethods</code> and <code>ActiveRecord::ConnectionAdapters::Quoting</code>. The first thing that comes to my head is to do <code>alias_method_chain</code> of these methods. I didn&#8217;t think much, write the test and implement it.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
