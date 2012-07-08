@@ -5,7 +5,7 @@ date: 2012-07-04 22:36
 comments: true
 categories: 
 ---
-A couple week ago, while I was developing the [active_record_uuid gem](http://rubygems.org/gems/active_record_uuid), I need to do extension to the existing methods in `active_record` library. The first is to send `portal_uuid` instead of `portal_id` in the association methods such as `has_many`, .... The second one is about quoting `uuid` value and send it to `mysql`. I went to see the source code of `active_record` to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, `ActiveRecord::Associations::ClassMethods` and `ActiveRecord::ConnectionAdapters::Quoting`. The first thing that comes to my head is to do `alias_method_chain` of these methods. I didn't think much, write the test and implement it.
+A couple week ago, while I was developing the [active_record_uuid gem](http://rubygems.org/gems/active_record_uuid), I need to do extension to the existing methods in `active_record` library. The first one is to send `portal_uuid` instead of `portal_id` in the association methods such as `has_many`, .... The second one is about quoting `uuid` value and send it to `mysql`. I went to see the source code of `active_record` to find where the best place to do my job. After spending some times to understand the codebase, I find the place to overwrite, `ActiveRecord::Associations::ClassMethods` and `ActiveRecord::ConnectionAdapters::Quoting`. The first thing that comes to my head is to do `alias_method_chain` of these methods. I didn't think much, write the test and implement it.
 
 {% codeblock lang:ruby %}
 module ActiveRecord
