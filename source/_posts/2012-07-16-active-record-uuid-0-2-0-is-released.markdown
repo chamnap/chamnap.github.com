@@ -23,3 +23,9 @@ After releasing version `0.1.0`, I get the feeling I need to add one more featur
 {% endcodeblock %}
 
 In the example above, it will merge the global configuration options with the passed in options in `has_uuid`.
+
+There's a config generator that generates the default configuration file into config/initializers directory. Run the following generator command, then edit the generated file.
+
+{% codeblock lang:ruby %}
+  $ rails g active_record_uuid:config
+{% endcodeblock %}
