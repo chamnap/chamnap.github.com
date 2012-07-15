@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: web-services - Chamnap Chhorn</title>
+  <title>active_record_uuid 0.2.0 is released - Chamnap Chhorn</title>
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="Category: web-services">
+  <meta name="description" content="After releasing version 0.1.0, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chamnap.github.comblog/categories/web-services">
+  <link rel="canonical" href="http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -76,53 +76,120 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Web-services</h1>
+    
+      <h1 class="entry-title">Active_record_uuid 0.2.0 Is Released</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T00:20:00+07:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>After releasing version <code>0.1.0</code>, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. Actually, it&#8217;s a small change, but I haven&#8217;t had enough time to do it. Now, it&#8217;s complete.</p>
 
-  
-  <h2>2011</h2>
-
-<article>
-  
-<h1><a href="/blog/2011/03/29/rest-presenation-on-devcamp/">REST Presenation on DevCamp</a></h1>
-<time datetime="2011-03-29T10:42:00+07:00" pubdate><span class='month'>Mar</span> <span class='day'>29</span> <span class='year'>2011</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/presentation/'>presentation</a>, <a class='category' href='/blog/categories/rest/'>rest</a>, <a class='category' href='/blog/categories/web-services/'>web-services</a></span>
-</footer>
-
-
-</article>
-
-
-
-  
-  <h2>2010</h2>
-
-<article>
-  
-<h1><a href="/blog/2010/07/16/rest-and-rails-presentation/">REST and RAILS Presentation</a></h1>
-<time datetime="2010-07-16T21:04:00+07:00" pubdate><span class='month'>Jul</span> <span class='day'>16</span> <span class='year'>2010</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rest/'>rest</a>, <a class='category' href='/blog/categories/web-services/'>web-services</a></span>
-</footer>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">column</span>      <span class="ss">:uuid</span>
+</span><span class='line'>    <span class="n">primary_key</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">association</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="n">store_as</span>    <span class="ss">:binary</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">People</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>    <span class="n">has_uuid</span> <span class="ss">:association</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">has_many</span> <span class="ss">:comments</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
-
+<p>In the example above, it will merge the global configuration options with the passed in options in <code>has_uuid</code>.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Chamnap Chhorn</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T00:20:00+07:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/uuid/'>uuid</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released/" data-via="chamnap" data-counturl="http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/" title="Previous Post: Lesson learned from alias_method_chain">&laquo; Lesson learned from alias_method_chain</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -237,7 +304,10 @@
       var disqus_shortname = 'chamnap';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released/';
+        var disqus_url = 'http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

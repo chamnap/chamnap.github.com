@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="I conducted a training to some developers in my office about one full day, yesterday. It is quite exhausted anyway, but everyone seems understand &hellip;">
+  <meta name="description" content="It reminds me about uploading via iframe that I did a year ago when my colleague asked me to help with login openid in a popup window. It&#8217;s a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,6 +83,100 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2009/06/27/cross-window-javascript-communication/">Cross-window Javascript Communication</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-06-27T10:00:00+07:00" pubdate data-updated="true">Jun 27<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/06/27/cross-window-javascript-communication/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It reminds me about uploading via iframe that I did a year ago when my colleague asked me to help with login openid in a popup window. It&#8217;s a similar story with this problem. Actually, login with openid could not place in a iframe because you could the code that prevents this.
+view plainprint?</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">top</span> <span class="o">==</span> <span class="nx">self</span><span class="p">)</span> <span class="p">{</span> <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span> <span class="p">}</span> <span class="k">else</span>  <span class="p">{</span> <span class="nx">top</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">&quot;http://www.yahoo.com&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, let&#8217;s see a quick summary on this basic communication.</p>
+
+<p>Communication from parent to child window, you need to a reference of the child window so that can call any function in the child window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// Create a new popup window  </span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">popupWin</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="s2">&quot;popupWin&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// To call functions defined in the popup:  </span>
+</span><span class='line'>    <span class="nx">popupWin</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Communication from child to parent window, you need to use this way:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">opener</span><span class="p">.</span><span class="nx">doSomethingOnParent</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is the problem, the parent window needs to know when the uploading (in iframe) or logging in (in popup window) is done. The only way that the parent window can notified by the child window after finish processing. Usually, for uploading and logging in with openid, the action in your controller would render a view back. The trick is here on the onload of the body, you could notify the parent window.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">def</span> <span class="nf">login</span>
+</span><span class='line'>      <span class="vi">@status</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>    <span class="nt">&lt;html&gt;&lt;head&gt;&lt;/head&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;window.opener.handleOpenIDResponse(&#39;&quot;</span> <span class="err">+</span> <span class="err">@</span><span class="na">status</span> <span class="err">+</span> <span class="err">&quot;&#39;);</span><span class="na">window</span><span class="err">.</span><span class="na">close</span><span class="err">();&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That would solve the problem, and you could send any information back through your view.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2009/05/13/javascript-in-object-oriented-way-presentation/">JavaScript in Object-Oriented Way Presentation</a></h1>
     
     
@@ -140,6 +234,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/16/active-record-uuid-0-2-0-is-released/">active_record_uuid 0.2.0 is released</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/">Lesson learned from alias_method_chain</a>
       </li>
     
@@ -153,10 +251,6 @@
     
       <li class="post">
         <a href="/blog/2012/06/02/lazy-loaded-object/">Lazy-loaded object</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/27/reduce-if-else-statements/">Reduce If/Else Statements</a>
       </li>
     
   </ul>

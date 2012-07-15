@@ -9,7 +9,7 @@
   <meta name="author" content="Chamnap Chhorn">
 
   
-  <meta name="description" content="A couple week ago, while I was developing the active_record_uuid gem, I need to do extension to the existing methods in active_record library. The &hellip;">
+  <meta name="description" content="After releasing version 0.1.0, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,71 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/16/active-record-uuid-0-2-0-is-released/">Active_record_uuid 0.2.0 Is Released</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-16T00:20:00+07:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/16/active-record-uuid-0-2-0-is-released/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>After releasing version <code>0.1.0</code>, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. Actually, it&#8217;s a small change, but I haven&#8217;t had enough time to do it. Now, it&#8217;s complete.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">column</span>      <span class="ss">:uuid</span>
+</span><span class='line'>    <span class="n">primary_key</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">association</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="n">store_as</span>    <span class="ss">:binary</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">People</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>    <span class="n">has_uuid</span> <span class="ss">:association</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">has_many</span> <span class="ss">:comments</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the example above, it will merge the global configuration options with the passed in options in <code>has_uuid</code>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1241,69 +1306,6 @@ After gone through several ruby books, I was convinced again and again to write 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2011/10/19/how-useful-is-monit/">How Useful Is Monit?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-19T16:09:00+07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
-        
-         | <a href="/blog/2011/10/19/how-useful-is-monit/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>From here assuming that you know what monit is, but if you don’t, just go to see <a href="http://mmonit.com/monit/">Monit</a>. It’s basically a monitoring utility in unix system. You could monitor almost anything in your server. It’ll automatically restart the service if it stops and send you an email.</p>
-
-<p>Generally, some people don&#8217;t like it very much because it send too many emails when your server is in trouble, and those emails are annoying. A part of my job is the servers&#8217; maintainer and deployer. My job is to keep the servers fast and stable. By now, we have around 10 servers using Amazon Web Service. There are many services need to be run properly, otherwise my work’s inbox will contain some new emails. There are some ruby scripts as well need to run on the production server. The problem is those scripts are a bit heavy, it took more than 50% of the cpu to process, and if we more than 2 simultaneously, we’ll see some complaints from customers saying that &#8220;our websites are performing slowly. Why?&#8221;</p>
-
-<p>Generally, we often lose our server because something is wrong on the server. We are really don&#8217;t know why. It happens on one server after another. Until I decide to use monit to monitor many services as possible. It seems when the ubuntu server is heavily processing, the sshd service is down. We never know it was down. We just can’t remote our server. The solution is to reboot, but next few days it happens again. Usually, when something weird happens during the startup, the sshd service is never up. How can we remote to those servers? Clearly, there are no way if that service is down.</p>
-
-<p>I see the answer when I add monit on all servers, and I run some scripts on the server as usual. The next morning came up, two emails from monit saying &#8220;sshd is down&#8221; and &#8220;sshd is up&#8221;. (I didn&#8217;t notice about it until the next few days.) That&#8217;s good, isn&#8217;t it? I don&#8217;t have to reboot the server. When monit detects there is no such service, it simply restart that service. By now, I don&#8217;t really understand why sshd is always down when the server is heavily busy. I tried to upgrade to the latest AWS ami already, but the problem still exists. Maybe the server is too overloaded. The solution is to expand more servers or refactor those ruby processes.</p>
-
-<p>Be sure to monit sshd service to all your server.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>check process sshd with pidfile /var/run/sshd.pid
-</span><span class='line'>    group system
-</span><span class='line'>    start program  <span class="s2">&quot;/etc/init.d/ssh start&quot;</span>
-</span><span class='line'>    stop program  <span class="s2">&quot;/etc/init.d/ssh stop&quot;</span>
-</span><span class='line'>    <span class="k">if </span>failed port 1234 protocol ssh <span class="k">then </span>restart
-</span><span class='line'>    <span class="k">if </span>5 restarts within 5 cycles <span class="k">then </span>timeout
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You can checkout <a href="https://github.com/mojombo/god">God</a> as well if you want nicer syntax and more readable code.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1325,6 +1327,10 @@ After gone through several ruby books, I was convinced again and again to write 
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/16/active-record-uuid-0-2-0-is-released/">active_record_uuid 0.2.0 is released</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/07/04/lesson-learned-from-alias-method-chain/">Lesson learned from alias_method_chain</a>
       </li>
     
@@ -1338,10 +1344,6 @@ After gone through several ruby books, I was convinced again and again to write 
     
       <li class="post">
         <a href="/blog/2012/06/02/lazy-loaded-object/">Lazy-loaded object</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/05/27/reduce-if-else-statements/">Reduce If/Else Statements</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: uuid | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/uuid/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-07-08T16:10:06+07:00</updated>
+  <updated>2012-07-16T00:31:00+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -12,6 +12,53 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[active_record_uuid 0.2.0 is released]]></title>
+    <link href="http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released/"/>
+    <updated>2012-07-16T00:20:00+07:00</updated>
+    <id>http://chamnap.github.com/blog/2012/07/16/active-record-uuid-0-2-0-is-released</id>
+    <content type="html"><![CDATA[<p>After releasing version <code>0.1.0</code>, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. Actually, it's a small change, but I haven't had enough time to do it. Now, it's complete.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;column      :uuid</span>
+</span><span class='line'><span class="sr">primary_key true</span>
+</span><span class='line'><span class="sr">association false</span>
+</span><span class='line'><span class="sr">store_as    :binary</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">class</span> <span class="nc">People</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;has_uuid :association =&amp;gt; true</span>
+</span><span class='line'><span class="sr">has_many :comments</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>In the example above, it will merge the global configuration options with the passed in options in <code>has_uuid</code>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[active_record_uuid 0.1.0 is released]]></title>
