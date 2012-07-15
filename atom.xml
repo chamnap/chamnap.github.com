@@ -4,7 +4,7 @@
   <title><![CDATA[Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-07-16T00:31:00+07:00</updated>
+  <updated>2012-07-16T00:33:56+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -46,6 +46,15 @@
 
 
 <p>In the example above, it will merge the global configuration options with the passed in options in <code>has_uuid</code>.</p>
+
+<p>There&#8217;s a config generator that generates the default configuration file into config/initializers directory. Run the following generator command, then edit the generated file.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="err">$</span> <span class="n">rails</span> <span class="n">g</span> <span class="n">active_record_uuid</span><span class="ss">:config</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 ]]></content>
   </entry>
   
