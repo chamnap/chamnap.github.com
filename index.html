@@ -121,17 +121,29 @@
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">column</span>      <span class="ss">:uuid</span>
-</span><span class='line'>    <span class="n">primary_key</span> <span class="kp">true</span>
-</span><span class='line'>    <span class="n">association</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="n">store_as</span>    <span class="ss">:binary</span>
-</span><span class='line'>  <span class="k">end</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/initializers/active_record_uuid_config.rb</span>
+</span><span class='line'><span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">column</span>      <span class="ss">:uuid</span>
+</span><span class='line'>  <span class="n">primary_key</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">association</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="n">store_as</span>    <span class="ss">:binary</span>
+</span><span class='line'><span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">class</span> <span class="nc">People</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>    <span class="n">has_uuid</span> <span class="ss">:association</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-</span><span class='line'>    <span class="n">has_many</span> <span class="ss">:comments</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="c1"># models</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">People</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_uuid</span> <span class="ss">:association</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:comments</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_uuid</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 

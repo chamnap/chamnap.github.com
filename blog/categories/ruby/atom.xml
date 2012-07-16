@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Chamnap Chhorn]]></title>
   <link href="http://chamnap.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://chamnap.github.com/"/>
-  <updated>2012-07-16T00:33:56+07:00</updated>
+  <updated>2012-07-16T10:05:58+07:00</updated>
   <id>http://chamnap.github.com/</id>
   <author>
     <name><![CDATA[Chamnap Chhorn]]></name>
@@ -37,23 +37,31 @@
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecordUuid</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;column      :uuid</span>
-</span><span class='line'><span class="sr">primary_key true</span>
-</span><span class='line'><span class="sr">association false</span>
-</span><span class='line'><span class="sr">store_as    :binary</span>
-</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'><span class="sr">&lt;h1&gt;config/ini</span><span class="n">tializers</span><span class="o">/</span><span class="n">active_record_uuid_config</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'><span class="sr">&lt;p&gt;ActiveRecordUuid.configure do</span>
+</span><span class='line'><span class="sr">  column      :uuid</span>
+</span><span class='line'><span class="sr">  primary_key true</span>
+</span><span class='line'><span class="sr">  association false</span>
+</span><span class='line'><span class="sr">  store_as    :binary</span>
+</span><span class='line'><span class="sr">end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">class</span> <span class="nc">People</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">models</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;has_uuid :association =&amp;gt; true</span>
-</span><span class='line'><span class="sr">has_many :comments</span>
-</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'><span class="sr">&lt;p&gt;class People &amp;lt; ActiveRecord::Base</span>
+</span><span class='line'><span class="sr">  has_uuid :association =&gt; true</span>
+</span><span class='line'><span class="sr">  has_many :comments</span>
+</span><span class='line'><span class="sr">end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="k">class</span> <span class="nc">Article</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_uuid</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In the example above, it will merge the global configuration options with the passed in options in <code>has_uuid</code>.</p>
