@@ -9,17 +9,23 @@ categories: [gem, ruby, uuid]
 After releasing version `0.1.0`, I get the feeling I need to add one more feature to this gem, the ability to configure in global and per model. Actually, it's a small change, but I haven't had enough time to do it. Now, it's complete.
 
 {% codeblock lang:ruby %}
-  ActiveRecordUuid.configure do
-    column      :uuid
-    primary_key true
-    association false
-    store_as    :binary
-  end
-  
-  class People < ActiveRecord::Base
-    has_uuid :association => true
-    has_many :comments
-  end
+# config/initializers/active_record_uuid_config.rb
+ActiveRecordUuid.configure do
+  column      :uuid
+  primary_key true
+  association false
+  store_as    :binary
+end
+
+# models
+class People < ActiveRecord::Base
+  has_uuid :association => true
+  has_many :comments
+end
+
+class Article < ActiveRecord::Base
+  has_uuid
+end
 {% endcodeblock %}
 
 In the example above, it will merge the global configuration options with the passed in options in `has_uuid`.
