@@ -9,12 +9,14 @@ categories:
 I have been working as a Lead Software Engineer for about 2 years and a half. My tasks are:
 
 1. Do what I'm told to do.
-2. A cleaner. I need to rework on the existing projects which haven't done correctly, and make sure it is working properly.
-3. Do regular code review.
-4. Write specs and maintain the code quality.
-5. Meet the deadline.
-6. Learn new skills.
-7. Transform requirements into code and explain others how to do it.
+2. Design and implement v3.5 and v4 of yoolk system.
+3. A cleaner. I need to rework on the existing projects which haven't done correctly, and make sure it is working properly.
+4. Do regular code review.
+5. Write specs and maintain the code quality.
+6. Meet the deadline.
+7. Learn new skills.
+8. Transform requirements into code and explain others how to do it.
+9. Administer and maintain servers which hosts at amazon.
 
 The good thing is that right now I'm the author of the following ruby oss projects.
 
